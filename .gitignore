@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.local.json
+*.tgz
+.env
+.env.*
+!.env.example
+.pi/
+.DS_Store
+coverage/
+*.tsbuildinfo
+.video-work/
