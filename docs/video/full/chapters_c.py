@@ -161,7 +161,7 @@ class Scene11(FilmScene):
 
         self.cue(1)
         investigation = VGroup(helper, order, service, first, second, order_outcome, service_outcome, helper_note)
-        before = panel("AUTHOR-PREPARED INPUT", ["ticket T42 + policy", "May invoice + attachment text"], BLUE,
+        before = panel("AUTHOR-PREPARED INPUT", ["T42 follow-up + policy", "checkout + service unavailable"], BLUE,
                        width=5.0, height=1.7, size=24).move_to([-3.3, 0.55, 0])
         after = panel("NEXT AUTHOR-PREPARED INPUT", ["ticket T42 + policy", "+ selected order / outage evidence"], BLUE,
                       width=5.0, height=1.7, size=23).move_to([3.3, 0.55, 0])

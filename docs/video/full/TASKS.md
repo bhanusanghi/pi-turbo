@@ -7,9 +7,9 @@
   - [x] Generate local Kokoro audio.
   - [x] Measure speech and set frame-aligned scene timings (7:36.53 total).
 - [ ] 3. Build the animation
-  - [ ] Animate the problem, intuition and model mapping.
+  - [x] Animate the problem, intuition and model mapping.
   - [ ] Animate the ticket workflow and ownership diagrams.
-  - [ ] Add late integration pseudocode and state examples.
+  - [x] Add late integration pseudocode and state examples.
 - [ ] 4. Render and review
   - [ ] Review a draft and correct layout or timing issues.
   - [ ] Render the final 1080p video.
