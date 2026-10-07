@@ -1,0 +1,525 @@
+[
+  {
+    "id": "problem",
+    "start": 0,
+    "end": 35,
+    "title": "Repeated decisions should become completed work",
+    "chapter": "The problem",
+    "kind": "flow",
+    "subtitle": "Tickets keep arriving. Routine cases need action; unusual cases need investigation.",
+    "nodes": [
+      [
+        "Ticket stream",
+        "neutral",
+        "“I was charged twice”"
+      ],
+      [
+        "Understand + act",
+        "neutral",
+        "Which team? Need more evidence?"
+      ],
+      [
+        "Correct team",
+        "success",
+        "Assigned, with a recorded result"
+      ]
+    ],
+    "narration": "Every day, another stream of decisions arrives. A ticket needs the right team. A news item might matter to a position. A document might need review. You want more than a classification: you want the work carried through to a result. Most cases follow familiar patterns. Some need investigation. How do you build a system that handles both, without rebuilding the machinery around every new application?",
+    "note": "Begin with a concrete developer problem and a completed outcome. No platform names, role taxonomy or code yet.",
+    "legend": [],
+    "cards": [],
+    "caption": "A label is useful. A completed action is the goal."
+  },
+  {
+    "id": "audience",
+    "start": 35,
+    "end": 65,
+    "title": "For developers turning judgment into workflows",
+    "chapter": "Who + value",
+    "kind": "benefits",
+    "subtitle": "Keep your domain logic. Reuse the machinery that carries it to an outcome.",
+    "nodes": [
+      [
+        "Your application",
+        "neutral",
+        "Triage · relevance · validation"
+      ],
+      [
+        "The desired system",
+        "neutral",
+        "Routine decisions + help when needed"
+      ],
+      [
+        "What you gain",
+        "success",
+        "Less agent plumbing to build"
+      ]
+    ],
+    "narration": "This is for developers building applications where judgment leads to action: routing tickets, filtering relevant information, or checking whether something needs attention. You still define what a good decision means. What you should be able to reuse is the system that calls models, runs tools, keeps records, and handles requests for deeper help. The goal is to jump-start a persistent agent around your useful logic.",
+    "note": "Other domains are brief audience cues, not additional worked examples. “Persistent” does not promise automatic crash replay.",
+    "legend": [],
+    "cards": [],
+    "caption": "One product’s rules. Shared execution machinery."
+  },
+  {
+    "id": "intuition",
+    "start": 65,
+    "end": 110,
+    "title": "Why familiar decisions can become fast",
+    "chapter": "Human intuition",
+    "kind": "learning",
+    "subtitle": "Kahneman: automatic recognition and deliberate effort.",
+    "nodes": [
+      [
+        "Study the policy",
+        "neutral",
+        "A new support colleague"
+      ],
+      [
+        "Try a decision",
+        "fast",
+        "Route a familiar ticket"
+      ],
+      [
+        "Supervisor feedback",
+        "deep",
+        "Check the outcome; explain mistakes"
+      ]
+    ],
+    "narration": "Daniel Kahneman described two modes of thinking. System One is automatic: a familiar word or pattern comes to mind quickly. System Two takes deliberate effort: working through an unfamiliar problem. Imagine a new support colleague learning to route tickets. At first, they study the policy and reason through each case. With practice and reliable supervisor feedback, familiar patterns become easier to recognize. This works when the environment has patterns that can actually be learned. The lesson is not to trust every intuition. It is to recognize familiar cases while keeping deliberate thought available for unfamiliar ones.",
+    "note": "Human teaching analogy only. Feedback is from a human supervisor, never Pi. Practice needs learnable regularities and reliable feedback; no literal brain-module claim.",
+    "legend": [
+      [
+        "fast",
+        "Familiar recognition"
+      ],
+      [
+        "deep",
+        "Deliberate thought"
+      ]
+    ],
+    "cards": [],
+    "caption": "Learnable patterns + repeated practice + reliable feedback"
+  },
+  {
+    "id": "models",
+    "start": 110,
+    "end": 155,
+    "title": "The AI analogy: a judgment, or a deeper investigation",
+    "chapter": "AI models",
+    "kind": "models",
+    "subtitle": "A focused model returns a usable decision. A reasoning model can investigate.",
+    "nodes": [
+      [
+        "Ticket + policy",
+        "neutral",
+        "Information we supply"
+      ],
+      [
+        "System One: Jev",
+        "s1",
+        "A typed judgment"
+      ],
+      [
+        "Payments",
+        "s1",
+        "A value application code can use"
+      ]
+    ],
+    "narration": "A System One model such as Jev gives us a related building block: supplied information goes in, a typed judgment comes out. A Choice can pick payments, technical, or SOS. A Noul gives a probability for a yes-or-no question. Choice confidence describes the concentration of the answer; it does not prove correctness. A System Two language model can instead plan, investigate, and generate a response. The opportunity is to use the focused judgment on the routine path, and spend on deeper reasoning when needed. Here Jev is already trained. We configure and evaluate its inputs and decision criteria; we are not training its weights.",
+    "note": "All displayed values are illustrative. Choice probabilities .94/.04/.02 give confidence .91 for three choices under the documented normalization. Noul has no separate confidence. Shorter route is schematic, not a latency benchmark; no universal speed or cost guarantee.",
+    "legend": [
+      [
+        "s1",
+        "System One: typed judgment"
+      ],
+      [
+        "s2",
+        "System Two: reasoning"
+      ]
+    ],
+    "cards": [],
+    "caption": "Target: lower routine cost and latency; evaluate on your workload."
+  },
+  {
+    "id": "custom",
+    "start": 155,
+    "end": 195,
+    "title": "Your product needs rules. An agent needs machinery.",
+    "chapter": "Build burden",
+    "kind": "build",
+    "subtitle": "Even a useful classifier does not execute a complete workflow by itself.",
+    "nodes": [
+      [
+        "Your useful logic",
+        "blue",
+        "Policy · evidence · decision mapping"
+      ],
+      [
+        "Agent machinery",
+        "neutral",
+        "Model loop · tools · history · handover"
+      ],
+      [
+        "A working product",
+        "success",
+        "Judgment reaches a real outcome"
+      ]
+    ],
+    "narration": "Suppose you already have a good way to classify tickets. To make it an agent, you still need to execute the assignment, feed results into the next decision, maintain a session, and coordinate a helper that may call several tools. You can build all of that yourself. But then each application carries another version of the same plumbing. We want a reusable foundation, while your rules, business state, and tool bindings remain under your control. The classifier supplies judgment. The surrounding system carries it into work.",
+    "note": "Define the ordinary-language need for a harness before naming Pi or Turbo. Custom construction remains valid for needs outside this bounded decision model.",
+    "legend": [],
+    "cards": [],
+    "caption": "Domain logic is product-specific. Execution machinery can be shared."
+  },
+  {
+    "id": "foundation",
+    "start": 195,
+    "end": 230,
+    "title": "Pi supplies the harness. Turbo makes judgment the driver.",
+    "chapter": "Meet the system",
+    "kind": "foundation",
+    "subtitle": "Turbo works alongside your other Pi extensions and any MCP server connected through Pi.",
+    "nodes": [
+      [
+        "Your application",
+        "author",
+        "Its rules and business tools"
+      ],
+      [
+        "Turbo extension",
+        "turbo",
+        "System One + optional System Two"
+      ],
+      [
+        "Pi harness",
+        "pi",
+        "Execution · hooks · session records"
+      ]
+    ],
+    "narration": "That foundation is Pi: a mature agent harness with model connections, tool execution, extension hooks, and session records. Turbo is one extension on that harness. You can keep using other Pi extensions and connect any MCP server supported by Pi. Their tools and hooks remain part of the same environment. Pi already supports classifiers such as Jev. Turbo adds the orchestration that lets a typed judgment select the next step, with optional System Two consultation. You bring the product logic and map the available capabilities into your workflow.",
+    "note": "First introduction of Pi/Turbo and ownership colors. Current implementation uses native classifier access and a native Agent helper, not a same-session System Two model switch. The composition callout shows other extensions and connected MCP servers feeding the shared Pi environment. Workflow use requires explicit tool exposure, bindings and permissions; this is not a claim that every possible extension combination has been tested.",
+    "legend": [
+      [
+        "author",
+        "Your application"
+      ],
+      [
+        "turbo",
+        "Turbo orchestration"
+      ],
+      [
+        "pi",
+        "Pi execution"
+      ]
+    ],
+    "cards": [],
+    "caption": "Keep your Pi extensions and MCP integrations. Add Turbo’s decision flow."
+  },
+  {
+    "id": "architecture",
+    "start": 230,
+    "end": 275,
+    "title": "The whole flow, before any code",
+    "chapter": "High-level flow",
+    "kind": "branch",
+    "subtitle": "System One chooses the next step. Deeper help returns to that decision flow.",
+    "nodes": [
+      [
+        "Ticket + relevant facts",
+        "author",
+        "“Charged twice”"
+      ],
+      [
+        "System One",
+        "s1",
+        "Assign · investigate · respond"
+      ],
+      [
+        "Action or response",
+        "pi",
+        "Execute a tool, or finish"
+      ]
+    ],
+    "narration": "Here is the whole idea. A ticket arrives. Your application supplies the relevant facts and policy. System One selects a next step. A clear payment issue can become an assignment, executed through Pi, followed by a final response based on the result. Now change the ticket: “My payment failed, and the service is down.” The correct route may need evidence. If enabled, System One can request a System Two investigation. That helper checks the permitted tools and returns its findings. The main workflow then asks System One what to do with that evidence. Deeper reasoning is available without becoming the default driver of every case.",
+    "note": "Reveal routine route first, then helper and return. Same ticket stream, independent routine/ambiguous variants. A configured response can be templated; Jev does not generate freeform replies.",
+    "legend": [
+      [
+        "author",
+        "Your facts + policy"
+      ],
+      [
+        "s1",
+        "System One"
+      ],
+      [
+        "s2",
+        "System Two"
+      ],
+      [
+        "pi",
+        "Pi tools + results"
+      ]
+    ],
+    "cards": [],
+    "caption": "Routine: assign → actual receipt → finish. Unclear: investigate → judge again."
+  },
+  {
+    "id": "seams",
+    "start": 275,
+    "end": 305,
+    "title": "Three responsibilities; clear integration boundaries",
+    "chapter": "Ownership",
+    "kind": "seams",
+    "subtitle": "Your code defines meaning. Turbo coordinates. Pi executes and records.",
+    "nodes": [
+      [
+        "Your functions",
+        "author",
+        "Prepare facts · ask · map answer"
+      ],
+      [
+        "Turbo",
+        "turbo",
+        "Validate · route · enforce limits"
+      ],
+      [
+        "Pi",
+        "pi",
+        "Classifier · tool registry · session"
+      ]
+    ],
+    "narration": "Zoom in one level. Your functions decide what the model sees, what questions it answers, and what each answer means. Turbo calls those functions, obtains the typed judgment, and routes the resulting tool, consultation, or final decision. Pi owns the session and tool execution. This separation is what makes the extension reusable: ticket categories belong to the ticket application, not Turbo. A news application supplies different state and mappings to the same boundaries. Business state is also yours; you choose the facts carried into each decision.",
+    "note": "Source-grounded responsibility diagram, not an observed live trace. Actual adapter: turbo/auto virtual selection → Turbo custom provider → native ctx.modelRegistry.classify. Isolated native Pi Agent for System Two; its scoped wrappers re-enter parent executeTool and hooks.",
+    "legend": [
+      [
+        "author",
+        "Developer-owned logic"
+      ],
+      [
+        "turbo",
+        "Turbo control"
+      ],
+      [
+        "pi",
+        "Pi-native lifecycle"
+      ]
+    ],
+    "cards": [],
+    "caption": "Native path: virtual selection → provider → Pi classifier. Pi supplies the execution lifecycle."
+  },
+  {
+    "id": "setup",
+    "start": 305,
+    "end": 330,
+    "title": "Reuse your Pi extensions and MCP tools",
+    "chapter": "Connect first",
+    "kind": "flow",
+    "subtitle": "Connect through Pi; map existing tools into your workflow and scoped helper.",
+    "nodes": [
+      [
+        "Choose models",
+        "settings",
+        "Classifier + optional chat helper"
+      ],
+      [
+        "Your existing tools",
+        "pi",
+        "Other Pi extensions + connected MCPs"
+      ],
+      [
+        "Select integration",
+        "author",
+        "Your ticket logic + policy"
+      ]
+    ],
+    "narration": "Choose a System One classifier and, if you want deeper help, an authenticated System Two model. Keep using your other Pi extensions and MCP connections. Expose their business tools through Pi: reading an order, checking service status, or assigning a ticket. Map the tools your workflow needs, and grant the helper its subset. Turbo reuses Pi’s execution and hooks; your policy still decides when each capability is used.",
+    "note": "MCP tool exposure must be explicit; no automatic conversion of all installed tools. Model references and credentials use Pi. Operator ceiling plus per-subtask grant determine helper access.",
+    "legend": [
+      [
+        "settings",
+        "User configuration"
+      ],
+      [
+        "pi",
+        "Connected Pi capabilities"
+      ],
+      [
+        "author",
+        "Your integration"
+      ]
+    ],
+    "cards": [],
+    "caption": "Other Pi extensions + any Pi-compatible MCP → shared tools → your workflow"
+  },
+  {
+    "id": "integration",
+    "start": 330,
+    "end": 395,
+    "title": "The code you bring: prepare, ask, map",
+    "chapter": "Your functions",
+    "kind": "integration",
+    "subtitle": "Small functions connect your domain logic to the reusable agent.",
+    "nodes": [
+      [
+        "Prepare + ask",
+        "author",
+        "Ticket · policy · relevant results"
+      ],
+      [
+        "Typed answer",
+        "s1",
+        "payments"
+      ],
+      [
+        "Map to Pi tool",
+        "author",
+        "assign_ticket(T42, payments)"
+      ]
+    ],
+    "narration": "Now the code. Start with a function that prepares the next decision. It loads the current ticket, your routing policy, and relevant results. A second function defines the question and criteria: payments for a charge issue, technical for a product fault, SOS for your urgent-incident rules, and investigation when evidence is needed and the helper is available. The resolver maps an answer to an exact action. Payments means calling your registered assignment tool with this ticket ID and this team. Register those functions through Turbo’s integration interface. Turbo handles the repeated prepare, judge, and resolve cycle; Pi executes the returned tool. When the actual tool result confirms assignment, your preparation function can finish with a simple response. You write the meaning and the bindings, rather than the machinery around them.",
+    "note": "Explanatory pseudocode only; not a runnable ticket companion. prepareTurn, registerSystem1, request shape, answers.next.choice, and decision objects match current contracts. stateFor, questionsFor, resolve, validNext, confirmedAssignment, toolResult and myPiTools are developer-owned functions/data. Add validation and non-payment mappings in the real integration. Early scenes deliberately contain no code.",
+    "legend": [
+      [
+        "author",
+        "Your functions"
+      ],
+      [
+        "s1",
+        "Typed judgment"
+      ],
+      [
+        "pi",
+        "Tool execution"
+      ]
+    ],
+    "cards": [
+      {
+        "title": "Prepare",
+        "code": "prepareTurn(ctx):\n  state = stateFor(ctx)\n  if confirmedAssignment(state): return myFinal(state)\n  return { request: questionsFor(state, ctx.capabilities),\n           resolve: result => resolve(state, result) }"
+      },
+      {
+        "title": "State",
+        "code": "stateFor(ctx):\n  return { ticket: currentTicket(ctx),\n           policy: myRoutingPolicy,\n           evidence: relevantResults(ctx) }"
+      },
+      {
+        "title": "Question",
+        "code": "questionsFor(state, capabilities):\n  return { state, questions: { next: {\n    type: \"choice\", instructions: \"Choose next step\",\n    criteria: myCriteria(state.policy, capabilities)\n  } } }"
+      },
+      {
+        "title": "Criteria",
+        "code": "payments: \"Charge/refund issue; no SOS\"\ntechnical: \"Product fault; no SOS\"\nsos: \"Urgent incident under our policy\"\nask_user: \"Missing customer information\"\nif helper enabled:\n  investigate: \"Need external verification\""
+      },
+      {
+        "title": "Map answer",
+        "code": "resolve(state, result):\n  answer = validNext(result.answers.next)\n  if answer == \"payments\":\n    return { kind: \"tool\", name: \"assign_ticket\",\n             args: { ticketId: state.ticket.id,\n                     team: \"payments\" } }"
+      },
+      {
+        "title": "Register",
+        "code": "registerSystem1(pi, {\n  id: \"tickets\", revision: \"1\",\n  tools: myPiTools,\n  prepareTurn\n})\n// Business tools are registered/connected through Pi."
+      }
+    ],
+    "caption": "The seam returns an action description. Pi performs the action."
+  },
+  {
+    "id": "helper",
+    "start": 395,
+    "end": 430,
+    "title": "Deeper help gets a subtask, then returns facts",
+    "chapter": "Help + state",
+    "kind": "branch",
+    "subtitle": "Your policy defines the investigation and what evidence stays in state.",
+    "nodes": [
+      [
+        "Your subtask",
+        "author",
+        "Investigate T42, not every ticket"
+      ],
+      [
+        "System One",
+        "s1",
+        "Reconsider with returned evidence"
+      ],
+      [
+        "Assignment + receipt",
+        "pi",
+        "Record the actual outcome"
+      ]
+    ],
+    "narration": "For the ambiguous ticket, your resolver returns a consultation: a goal, supplied facts, a completion condition, and permitted tools with explicit arguments. The built-in helper can take several steps within that scope. Its findings and actual tool results return to your preparation function. You decide which facts to retain and include in the next judgment. Pi retains session history; Turbo tracks the attempt and consultation; your application manages business state. This is enough to build a continuing workflow without expecting the classifier to remember facts it was never given.",
+    "note": "Helper runs as an isolated native Pi Agent; tool wrappers use parent execution/hooks. Configured operator tool ceiling intersects author subtask grants and host permission checks. V1 business state/context stay developer-managed. On-screen read_* names are illustrative, not shipped capabilities.",
+    "legend": [
+      [
+        "author",
+        "Your policy + business state"
+      ],
+      [
+        "s1",
+        "System One driver"
+      ],
+      [
+        "s2",
+        "Scoped helper"
+      ],
+      [
+        "pi",
+        "Native tools + records"
+      ]
+    ],
+    "cards": [
+      {
+        "title": "Consult",
+        "code": "return { kind: \"consult\", request: {\n  goal: \"Determine whether T42 is payment or outage\",\n  inputs: { ticket: state.ticket },\n  doneWhen: \"Return supported findings + uncertainties\",\n  tools: myExactReadGrants(state.ticket)\n} }"
+      },
+      {
+        "title": "Tool scope",
+        "code": "myExactReadGrants(ticket):\n  return [\n    { name: \"read_order\",\n      arguments: [{ id: ticket.orderId }] },\n    { name: \"read_service_status\", arguments: [{}] }\n  ]"
+      },
+      {
+        "title": "Remember",
+        "code": "relevantResults(ctx):\n  return selectRelevant(\n    myStoredFacts(ctx.pi),\n    actualToolResults(ctx.pi),\n    ctx.consultation\n  )"
+      }
+    ],
+    "caption": "Session history: Pi · control record: Turbo · business facts: your code"
+  },
+  {
+    "id": "close",
+    "start": 430,
+    "end": 450,
+    "title": "Bring your logic. Reuse the agent machinery.",
+    "chapter": "What you get",
+    "kind": "flow",
+    "subtitle": "A reusable foundation for judgment-driven workflows, with deliberate help available.",
+    "nodes": [
+      [
+        "You bring",
+        "author",
+        "Policy · state · questions · bindings"
+      ],
+      [
+        "Turbo + Pi provide",
+        "turbo",
+        "Decision flow + native execution"
+      ],
+      [
+        "Your product runs",
+        "success",
+        "Tickets · alerts · reviews"
+      ]
+    ],
+    "narration": "You bring the rules, relevant state, and bindings to your tools. Turbo brings the judgment-driven flow and optional deeper help. Pi supplies execution and persistent records, alongside your existing extensions and MCP tools. Start with one bounded workflow, evaluate it on real cases, and spend your effort on what makes your application useful.",
+    "note": "Closing value statement. No live speed, cost, correctness or automatic recovery promise. Future domains are reuse cues, not combined application architecture.",
+    "legend": [
+      [
+        "author",
+        "Your product logic"
+      ],
+      [
+        "turbo",
+        "Reusable orchestration"
+      ]
+    ],
+    "cards": [],
+    "caption": "Your logic + existing Pi extensions + MCP tools + Turbo’s decision flow"
+  }
+]

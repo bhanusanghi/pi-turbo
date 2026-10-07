@@ -1,0 +1,69 @@
+{
+  "name": "pi-turbo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Author-managed System 1 decisions on Pi, with optional scoped System 2 consultation.",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "system1",
+    "jev",
+    "agent-runtime"
+  ],
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./extension": {
+      "types": "./dist/extension.d.ts",
+      "import": "./dist/extension.js"
+    }
+  },
+  "files": [
+    "src",
+    "dist",
+    "docs",
+    "examples",
+    "README.md",
+    "ARCHITECTURE.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "pi": {
+    "extensions": [
+      "./src/extension.ts"
+    ]
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "build:examples": "tsc -p tsconfig.examples.json",
+    "test": "npm run build && npm run build:examples && node --test test/*.test.mjs",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run check && npm run build"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-agent-core": "*",
+    "@earendil-works/pi-ai": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "1.0.4",
+    "@types/node": "^22.19.19",
+    "typescript": "~5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "rss-parser": "3.13.0"
+  }
+}

@@ -1,0 +1,49 @@
+[in#0 @ 0x857018000] UDTA parsing failed retrying raw
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'docs/video/pilot/pi-turbo-pilot.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    title           : Pi Turbo — Fast judgments, deeper help
+    encoder         : Lavf62.12.100
+  Duration: 00:01:00.00, start: 0.000000, bitrate: 577 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080, 429 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      encoder         : Lavc62.28.100 libx264
+  Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, mono, fltp, 139 kb/s (default)
+    Metadata:
+      handler_name    : SoundHandler
+  Stream #0:2[0x3](eng): Subtitle: mov_text (tx3g / 0x67337874), 0 kb/s (default)
+    Metadata:
+      handler_name    : SubtitleHandler
+      name            : English
+Stream mapping:
+  Stream #0:1 -> #0:0 (aac (native) -> pcm_s16le (native))
+Press [q] to stop, [?] for help
+Output #0, null, to 'pipe:':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    title           : Pi Turbo — Fast judgments, deeper help
+    encoder         : Lavf62.12.100
+  Stream #0:0(und): Audio: pcm_s16le, 192000 Hz, mono, s16, 3072 kb/s (default)
+    Metadata:
+      encoder         : Lavc62.28.100 pcm_s16le
+      handler_name    : SoundHandler
+size=N/A time=00:00:42.90 bitrate=N/A speed=85.5x elapsed=0:00:00.50    [Parsed_loudnorm_0 @ 0x85704cc00] 
+{
+	"input_i" : "-16.44",
+	"input_tp" : "-1.48",
+	"input_lra" : "7.00",
+	"input_thresh" : "-26.85",
+	"output_i" : "-16.16",
+	"output_tp" : "-1.50",
+	"output_lra" : "6.00",
+	"output_thresh" : "-26.56",
+	"normalization_type" : "dynamic",
+	"target_offset" : "0.16"
+}
+[out#0/null @ 0x85704c480] video:0KiB audio:22504KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:01:00.10 bitrate=N/A speed=88.2x elapsed=0:00:00.68    

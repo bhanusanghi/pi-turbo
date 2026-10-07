@@ -1,0 +1,30 @@
+[
+  {
+    "class": "Scene01",
+    "actual_seconds": 33.932682,
+    "expected_seconds": 33.96666666666667,
+    "actual_frames": "1018",
+    "expected_frames": 1019
+  },
+  {
+    "class": "Scene02",
+    "actual_seconds": 28.333333,
+    "expected_seconds": 28.366666666666667,
+    "actual_frames": "850",
+    "expected_frames": 851
+  },
+  {
+    "class": "Scene03",
+    "actual_seconds": 45.9,
+    "expected_seconds": 45.93333333333333,
+    "actual_frames": "1377",
+    "expected_frames": 1378
+  },
+  {
+    "class": "Scene04",
+    "actual_seconds": 44.966667,
+    "expected_seconds": 45.0,
+    "actual_frames": "1349",
+    "expected_frames": 1350
+  }
+]

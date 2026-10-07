@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pi Turbo · One-minute pilot</title>
+<style>
+  :root {color-scheme:dark;font-family:system-ui,sans-serif;background:#0b101b;color:#e8eef7}
+  body{max-width:1200px;margin:0 auto;padding:28px 20px 40px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;color:#9aaac1}
+  h1{font-size:clamp(26px,4vw,42px);font-weight:550;margin:12px 0}
+  p{color:#9aaac1;line-height:1.5;margin:8px 0 20px}
+  video{display:block;width:100%;aspect-ratio:16/9;background:#0b101b;border:1px solid #26364d;border-radius:12px}
+  .chapters{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+  button,a{background:#111b2a;color:#c9d7ec;border:1px solid #26364d;border-radius:8px;padding:9px 12px;font:inherit;font-size:13px;text-decoration:none;cursor:pointer}
+  button:hover,a:hover{border-color:#65d8e9;color:#65d8e9}
+  .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .voice{font-size:13px;color:#9aaac1}
+  button:focus-visible,a:focus-visible{outline:2px solid #65d8e9;outline-offset:3px}
+</style>
+<div class="eyebrow">PI TURBO / 60-SECOND PILOT</div>
+<h1>Fast judgments. Deeper help.</h1>
+<p>One ticket. An optional investigation. Evidence returns to the decision driver.</p>
+<video id="pilot" controls preload="metadata" playsinline poster="poster.jpg">
+  <source src="pi-turbo-pilot.mp4" type="video/mp4">
+  <track kind="captions" src="captions.vtt" srclang="en" label="English">
+  Your browser cannot play this video. <a href="pi-turbo-pilot.mp4">Download the MP4.</a>
+</video>
+<nav class="chapters" aria-label="Video chapters">
+  <button data-time="0">0:00 · Why an agent?</button>
+  <button data-time="8.466667">0:08 · Routine decision</button>
+  <button data-time="16.5">0:16 · Missing evidence</button>
+  <button data-time="23.733333">0:24 · Deeper help</button>
+  <button data-time="31.3">0:31 · Check facts</button>
+  <button data-time="38.433333">0:38 · Decide again</button>
+  <button data-time="46.6">0:47 · Pi + Turbo + your tools</button>
+</nav>
+<div class="voice">1080p · 30 fps · Kokoro 82M 8-bit / af_heart · Local MLX narration</div>
+<div class="links">
+  <a href="pi-turbo-pilot.mp4" download>Download video</a>
+  <a href="audio/narration.wav" download>Download narration</a>
+  <a href="captions.srt" download>Captions</a>
+  <a href="README.md">Source and reproduction</a>
+  <a href="TASKS.md">Task list</a>
+</div>
+<script>
+  const player = document.querySelector('#pilot');
+  document.querySelectorAll('[data-time]').forEach(button => {
+    button.addEventListener('click', () => {
+      player.currentTime = Number(button.dataset.time);
+      player.play().catch(() => {});
+    });
+  });
+</script>
+</html>

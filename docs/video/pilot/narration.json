@@ -1,0 +1,30 @@
+[
+  {
+    "id": "problem",
+    "text": "A ticket arrives. You need more than a label. You need the right action, and a recorded result."
+  },
+  {
+    "id": "routine",
+    "text": "Charged twice. System One selects payments. Pi runs the assignment tool and records the outcome."
+  },
+  {
+    "id": "ambiguous",
+    "text": "Now change the ticket. Payment failed, and the service is down. This needs more evidence."
+  },
+  {
+    "id": "consult",
+    "text": "When enabled, System One asks System Two to investigate, using only the tools you permit."
+  },
+  {
+    "id": "evidence",
+    "text": "The helper checks the order and service status, then returns evidence of an outage."
+  },
+  {
+    "id": "return",
+    "text": "System One uses that evidence to choose S O S. Pi assigns the ticket and records the result."
+  },
+  {
+    "id": "close",
+    "text": "Turbo connects the flow. You supply the policy and relevant state. Keep your Pi extensions and M C P tools. Fast judgments drive. Deeper reasoning helps when needed."
+  }
+]

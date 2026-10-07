@@ -1,0 +1,73 @@
+{
+  "model": "mlx-community/Kokoro-82M-8bit",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "sample_rate": 24000,
+  "duration": 60.0,
+  "fps": 30,
+  "segments": [
+    {
+      "id": "problem",
+      "text": "A ticket arrives. You need more than a label. You need the right action, and a recorded result.",
+      "audio_seconds": 6.0,
+      "peak": 0.6925130486488342,
+      "start": 0.0,
+      "duration": 8.466666666666667,
+      "audio_lead": 0.3
+    },
+    {
+      "id": "routine",
+      "text": "Charged twice. System One selects payments. Pi runs the assignment tool and records the outcome.",
+      "audio_seconds": 6.675,
+      "peak": 0.3354196548461914,
+      "start": 8.466666666666667,
+      "duration": 8.033333333333333,
+      "audio_lead": 0.3
+    },
+    {
+      "id": "ambiguous",
+      "text": "Now change the ticket. Payment failed, and the service is down. This needs more evidence.",
+      "audio_seconds": 5.875,
+      "peak": 0.48527780175209045,
+      "start": 16.5,
+      "duration": 7.233333333333333,
+      "audio_lead": 0.3
+    },
+    {
+      "id": "consult",
+      "text": "When enabled, System One asks System Two to investigate, using only the tools you permit.",
+      "audio_seconds": 6.225,
+      "peak": 0.5783154368400574,
+      "start": 23.733333333333334,
+      "duration": 7.566666666666666,
+      "audio_lead": 0.3
+    },
+    {
+      "id": "evidence",
+      "text": "The helper checks the order and service status, then returns evidence of an outage.",
+      "audio_seconds": 5.275,
+      "peak": 0.4208342134952545,
+      "start": 31.3,
+      "duration": 7.133333333333334,
+      "audio_lead": 0.3
+    },
+    {
+      "id": "return",
+      "text": "System One uses that evidence to choose S O S. Pi assigns the ticket and records the result.",
+      "audio_seconds": 6.825,
+      "peak": 0.4336308538913727,
+      "start": 38.43333333333333,
+      "duration": 8.166666666666666,
+      "audio_lead": 0.3
+    },
+    {
+      "id": "close",
+      "text": "Turbo connects the flow. You supply the policy and relevant state. Keep your Pi extensions and M C P tools. Fast judgments drive. Deeper reasoning helps when needed.",
+      "audio_seconds": 11.55,
+      "peak": 0.5050223469734192,
+      "start": 46.6,
+      "duration": 13.4,
+      "audio_lead": 0.3
+    }
+  ]
+}

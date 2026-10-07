@@ -1,0 +1,1073 @@
+{
+  "model": "mlx-community/Kokoro-82M-8bit",
+  "model_revision": "7e173a214392b1e0cb397e71c9745cbd14c06063",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "sample_rate": 24000,
+  "fps": 30,
+  "duration": 456.53333333333336,
+  "frames": 13696,
+  "target_seconds": 420.0,
+  "script_sha256": "a8207fd7d5a26c59e8bda479379bda8d24e60958d36b182559dc2d3594274ee0",
+  "caption_alignment": "Estimated within each measured paragraph; not word-aligned",
+  "scenes": [
+    {
+      "id": "01_problem",
+      "title": "A label is only the beginning",
+      "chapter": "Why this exists",
+      "frames": 1019,
+      "audio_seconds": 32.449999999999996,
+      "paragraphs": [
+        {
+          "text": "Another ticket arrives. A customer thinks they were charged twice for their May invoice. Their bank shows two debits of two thousand four hundred and ninety nine rupees, and they want help with a refund. A classification helps, but the useful outcome is getting this request to the right team.",
+          "audio_start": 0.5,
+          "audio_seconds": 17.9,
+          "wav": "audio/01_problem/paragraph-01.wav",
+          "peak": 0.548675537109375,
+          "rms": 0.05131632462143898,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Most cases are familiar. Some need investigation. You need a continuing workflow that can judge, investigate, execute, and record what actually happened.",
+          "audio_start": 18.65,
+          "audio_seconds": 10.625,
+          "wav": "audio/01_problem/paragraph-02.wav",
+          "peak": 0.697113037109375,
+          "rms": 0.05223466828465462,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "How much of that machinery should every application rebuild?",
+          "audio_start": 29.525,
+          "audio_seconds": 3.925,
+          "wav": "audio/01_problem/paragraph-03.wav",
+          "peak": 0.4083251953125,
+          "rms": 0.04567398875951767,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene01",
+      "narration_wav": "audio/01_problem/narration.wav",
+      "start": 0.0,
+      "duration": 33.96666666666667,
+      "video_path": "media/videos/film/1080p30/Scene01.mp4"
+    },
+    {
+      "id": "02_value",
+      "title": "Keep the product logic. Reuse the agent.",
+      "chapter": "Who needs it",
+      "frames": 851,
+      "audio_seconds": 26.85,
+      "paragraphs": [
+        {
+          "text": "This is for developers turning judgment into work: routing tickets, filtering information, validating requests, and other applications with useful choices.",
+          "audio_start": 0.5,
+          "audio_seconds": 10.225,
+          "wav": "audio/02_value/paragraph-01.wav",
+          "peak": 0.539794921875,
+          "rms": 0.0513424389064312,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Your advantage is knowing your domain. Which facts matter? Which action follows? What deserves investigation?",
+          "audio_start": 10.975,
+          "audio_seconds": 6.975,
+          "wav": "audio/02_value/paragraph-02.wav",
+          "peak": 0.63836669921875,
+          "rms": 0.049045197665691376,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "The goal is to jump-start the agent around that logic: reuse models, tools, records, and deeper help, while keeping application decisions yours.",
+          "audio_start": 18.2,
+          "audio_seconds": 9.65,
+          "wav": "audio/02_value/paragraph-03.wav",
+          "peak": 0.5052490234375,
+          "rms": 0.04927748814225197,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene02",
+      "narration_wav": "audio/02_value/narration.wav",
+      "start": 33.96666666666667,
+      "duration": 28.366666666666667,
+      "video_path": "media/videos/film/1080p30/Scene02.mp4"
+    },
+    {
+      "id": "03_human",
+      "title": "Practice turns deliberation into recognition",
+      "chapter": "The human intuition",
+      "frames": 1378,
+      "audio_seconds": 44.425,
+      "paragraphs": [
+        {
+          "text": "Daniel Kahneman described two modes of thinking. System One is automatic: familiar patterns come to mind easily. System Two takes deliberate effort, like working through an unfamiliar problem.",
+          "audio_start": 0.5,
+          "audio_seconds": 13.2,
+          "wav": "audio/03_human/paragraph-01.wav",
+          "peak": 0.6097412109375,
+          "rms": 0.0515223890542984,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Imagine a new support colleague. They read the policy, think through a refund request, and propose a team. A supervisor checks the decision and explains mistakes. After repeated practice, familiar charge issues become easy to recognize.",
+          "audio_start": 13.95,
+          "audio_seconds": 15.775,
+          "wav": "audio/03_human/paragraph-02.wav",
+          "peak": 0.56109619140625,
+          "rms": 0.05262146145105362,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "That learning needs patterns that can actually be learned, and reliable feedback. An unusual case still deserves deliberate thought. The lesson is to develop useful recognition and know its limits, not to trust every first impression.",
+          "audio_start": 29.974999999999998,
+          "audio_seconds": 15.45,
+          "wav": "audio/03_human/paragraph-03.wav",
+          "peak": 0.501190185546875,
+          "rms": 0.05157987400889397,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene03",
+      "narration_wav": "audio/03_human/narration.wav",
+      "start": 62.333333333333336,
+      "duration": 45.93333333333333,
+      "video_path": "media/videos/film/1080p30/Scene03.mp4"
+    },
+    {
+      "id": "04_models",
+      "title": "A typed judgment; deliberate help",
+      "chapter": "The model analogy",
+      "frames": 1350,
+      "audio_seconds": 43.2,
+      "paragraphs": [
+        {
+          "text": "A System One model such as Jev supplies a related building block. Information and typed questions go in; usable judgments come out. A Choice selects payments, technical, or S O S.",
+          "audio_start": 0.5,
+          "audio_seconds": 12.575,
+          "wav": "audio/04_models/paragraph-01.wav",
+          "peak": 0.476104736328125,
+          "rms": 0.050414927303791046,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "A Noul answers a yes-or-no question with a probability. Choice also returns probabilities and confidence. Concentrated answers look decisive; confidence does not prove correctness.",
+          "audio_start": 13.325,
+          "audio_seconds": 12.275,
+          "wav": "audio/04_models/paragraph-02.wav",
+          "peak": 0.34320068359375,
+          "rms": 0.05039997771382332,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "A System Two language model can plan and investigate. The aim is lower routine cost and latency, with deeper reasoning available when needed. Jev is already trained. We configure and evaluate inputs and criteria, not its weights. This analogy describes a division of work.",
+          "audio_start": 25.85,
+          "audio_seconds": 18.35,
+          "wav": "audio/04_models/paragraph-03.wav",
+          "peak": 0.40899658203125,
+          "rms": 0.050708264112472534,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene04",
+      "narration_wav": "audio/04_models/narration.wav",
+      "start": 108.26666666666667,
+      "duration": 45.0,
+      "video_path": "media/videos/film/1080p30/Scene04.mp4"
+    },
+    {
+      "id": "05_burden",
+      "title": "The classifier does not run the workflow",
+      "chapter": "What otherwise needs building",
+      "frames": 1050,
+      "audio_seconds": 26.325,
+      "paragraphs": [
+        {
+          "text": "Suppose the classifier works. You still need to execute assignment, check its real result, feed evidence into the next decision, and know when the task is finished.",
+          "audio_start": 0.5,
+          "audio_seconds": 10.325,
+          "wav": "audio/05_burden/paragraph-01.wav",
+          "peak": 0.692169189453125,
+          "rms": 0.05095905065536499,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Add investigation: a helper needs a goal, scoped tools, and a findings return. The session needs records.",
+          "audio_start": 11.075,
+          "audio_seconds": 7.45,
+          "wav": "audio/05_burden/paragraph-02.wav",
+          "peak": 0.573516845703125,
+          "rms": 0.049763087183237076,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "You can build a custom agent for every product. Or reuse that machinery and concentrate on the rules that make your application useful.",
+          "audio_start": 18.775,
+          "audio_seconds": 8.55,
+          "wav": "audio/05_burden/paragraph-03.wav",
+          "peak": 0.44476318359375,
+          "rms": 0.04968037083745003,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene05",
+      "narration_wav": "audio/05_burden/narration.wav",
+      "start": 153.26666666666668,
+      "duration": 35.0,
+      "video_path": "media/videos/film/1080p30/Scene05.mp4"
+    },
+    {
+      "id": "06_foundation",
+      "title": "Pi is the harness. Turbo changes the driver.",
+      "chapter": "The reusable foundation",
+      "frames": 1315,
+      "audio_seconds": 42.325,
+      "paragraphs": [
+        {
+          "text": "That foundation is Pi: a mature agent harness. In its ordinary loop, an L L M receives a goal and tools, calls a tool, reads its result, and continues until it responds.",
+          "audio_start": 0.5,
+          "audio_seconds": 12.25,
+          "wav": "audio/06_foundation/paragraph-01.wav",
+          "peak": 0.48065185546875,
+          "rms": 0.05091880261898041,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Pi already exposes classifiers such as Jev to extensions and model-callable tools. That makes classification available, without making it the ongoing driver.",
+          "audio_start": 13.0,
+          "audio_seconds": 11.075,
+          "wav": "audio/06_foundation/paragraph-02.wav",
+          "peak": 0.408599853515625,
+          "rms": 0.04939412698149681,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Turbo is a Pi extension that makes typed judgment drive the next step. Native classifier access sits behind a custom provider and selectable virtual model. Pi still executes tools. Other Pi extensions and connected M C P tools remain usable alongside Turbo.",
+          "audio_start": 24.325,
+          "audio_seconds": 19.0,
+          "wav": "audio/06_foundation/paragraph-03.wav",
+          "peak": 0.535064697265625,
+          "rms": 0.050987400114536285,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene06",
+      "narration_wav": "audio/06_foundation/narration.wav",
+      "start": 188.26666666666668,
+      "duration": 43.833333333333336,
+      "video_path": "media/videos/film/1080p30/Scene06.mp4"
+    },
+    {
+      "id": "07_flow",
+      "title": "One ticket. Two possible paths.",
+      "chapter": "High-level architecture",
+      "frames": 1516,
+      "audio_seconds": 49.025000000000006,
+      "paragraphs": [
+        {
+          "text": "Now the complete flow. Our invoice ticket comes with routing policy and verified payment facts: two charges settled. System One selects payments. Pi assigns T42 to that team. Its receipt confirms the assignment, and the workflow finishes this request.",
+          "audio_start": 0.5,
+          "audio_seconds": 17.5,
+          "wav": "audio/07_flow/paragraph-01.wav",
+          "peak": 0.4129638671875,
+          "rms": 0.05217296630144119,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Then a follow-up arrives: checkout says payment failed, and the customer\u2019s team cannot access the service. Is this the same issue? When enabled, System One requests investigation. The helper checks the order and service status through permitted tools.",
+          "audio_start": 18.25,
+          "audio_seconds": 16.35,
+          "wav": "audio/07_flow/paragraph-02.wav",
+          "peak": 0.5802001953125,
+          "rms": 0.05127202346920967,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Outage evidence returns to preparation and the next judgment. System One selects S O S under your policy. Pi assigns and records the new result. System Two supplied help. System One resumed the decision flow.",
+          "audio_start": 34.85,
+          "audio_seconds": 15.175,
+          "wav": "audio/07_flow/paragraph-03.wav",
+          "peak": 0.61187744140625,
+          "rms": 0.05117098242044449,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene07",
+      "narration_wav": "audio/07_flow/narration.wav",
+      "start": 232.1,
+      "duration": 50.53333333333333,
+      "video_path": "media/videos/film/1080p30/Scene07.mp4"
+    },
+    {
+      "id": "08_ownership",
+      "title": "Your meaning. Turbo coordination. Pi execution.",
+      "chapter": "Responsibility boundaries",
+      "frames": 876,
+      "audio_seconds": 27.675,
+      "paragraphs": [
+        {
+          "text": "Zoom in. Your functions define relevant facts, questions, decision criteria, and what an answer should do.",
+          "audio_start": 0.5,
+          "audio_seconds": 7.05,
+          "wav": "audio/08_ownership/paragraph-01.wav",
+          "peak": 0.506317138671875,
+          "rms": 0.05004771798849106,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Turbo carries that decision through classification, action, consultation, or completion. It checks mechanical constraints and keeps control records.",
+          "audio_start": 7.8,
+          "audio_seconds": 10.075,
+          "wav": "audio/08_ownership/paragraph-02.wav",
+          "peak": 0.662750244140625,
+          "rms": 0.050410136580467224,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Pi owns the session, tools, execution hooks, and continuation. Ticket categories live in your application. That separation makes Turbo reusable.",
+          "audio_start": 18.125,
+          "audio_seconds": 10.55,
+          "wav": "audio/08_ownership/paragraph-03.wav",
+          "peak": 0.38922119140625,
+          "rms": 0.0495467409491539,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene08",
+      "narration_wav": "audio/08_ownership/narration.wav",
+      "start": 282.6333333333333,
+      "duration": 29.2,
+      "video_path": "media/videos/film/1080p30/Scene08.mp4"
+    },
+    {
+      "id": "09_connect",
+      "title": "Connect the capabilities you already use",
+      "chapter": "Configuration and composition",
+      "frames": 832,
+      "audio_seconds": 26.225,
+      "paragraphs": [
+        {
+          "text": "Configure your integration and System One classifier. Optionally enable a System Two model and its allowed tools.",
+          "audio_start": 0.5,
+          "audio_seconds": 8.0,
+          "wav": "audio/09_connect/paragraph-01.wav",
+          "peak": 0.44921875,
+          "rms": 0.04900631681084633,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Register business operations through Pi, an M C P connection, or another extension. Your assignment tool can already exist.",
+          "audio_start": 8.75,
+          "audio_seconds": 8.725,
+          "wav": "audio/09_connect/paragraph-02.wav",
+          "peak": 0.5296630859375,
+          "rms": 0.049088720232248306,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Map the capabilities your workflow needs. The helper gets its granted subset; Pi hooks still apply. Existing integrations remain available.",
+          "audio_start": 17.725,
+          "audio_seconds": 9.5,
+          "wav": "audio/09_connect/paragraph-03.wav",
+          "peak": 0.401214599609375,
+          "rms": 0.04925813898444176,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene09",
+      "narration_wav": "audio/09_connect/narration.wav",
+      "start": 311.8333333333333,
+      "duration": 27.733333333333334,
+      "video_path": "media/videos/film/1080p30/Scene09.mp4"
+    },
+    {
+      "id": "10_functions",
+      "title": "Three small seams you supply",
+      "chapter": "Late integration pseudocode",
+      "frames": 1500,
+      "audio_seconds": 45.825,
+      "paragraphs": [
+        {
+          "text": "Now your code. Prepare the next judgment: load the ticket, routing policy, and relevant evidence. If a real assignment receipt confirms the outcome, return a final decision.",
+          "audio_start": 0.5,
+          "audio_seconds": 11.825,
+          "wav": "audio/10_functions/paragraph-01.wav",
+          "peak": 0.46246337890625,
+          "rms": 0.050992708653211594,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Otherwise, define the question. Ask for the next step and describe each choice: payments, technical, S O S, or investigation when help is available. Your criteria explain the boundaries.",
+          "audio_start": 12.575,
+          "audio_seconds": 12.725,
+          "wav": "audio/10_functions/paragraph-02.wav",
+          "peak": 0.477081298828125,
+          "rms": 0.05068622902035713,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Map the returned answer to an exact action. Payments becomes the registered assignment tool with this ticket ID and team. The tool performs the work.",
+          "audio_start": 25.549999999999997,
+          "audio_seconds": 10.4,
+          "wav": "audio/10_functions/paragraph-03.wav",
+          "peak": 0.5064697265625,
+          "rms": 0.04985988885164261,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Register the preparation function through Turbo. Its flow calls your functions again after results arrive. You supply meaning and bindings; Pi supplies execution.",
+          "audio_start": 36.199999999999996,
+          "audio_seconds": 10.875,
+          "wav": "audio/10_functions/paragraph-04.wav",
+          "peak": 0.40753173828125,
+          "rms": 0.05064530670642853,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene10",
+      "narration_wav": "audio/10_functions/narration.wav",
+      "start": 339.56666666666666,
+      "duration": 50.0,
+      "video_path": "media/videos/film/1080p30/Scene10.mp4"
+    },
+    {
+      "id": "11_help_state",
+      "title": "Help returns facts. You choose what stays.",
+      "chapter": "Scoped help and state",
+      "frames": 1245,
+      "audio_seconds": 40.0,
+      "paragraphs": [
+        {
+          "text": "For investigation, return a consultation: goal, supplied facts, completion condition, and exact tool grants. The built-in helper runs a scoped native Pi agent. Its L L M can take several tool steps until it finishes the subtask.",
+          "audio_start": 0.5,
+          "audio_seconds": 16.2,
+          "wav": "audio/11_help_state/paragraph-01.wav",
+          "peak": 0.570587158203125,
+          "rms": 0.05136370286345482,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Findings and real tool outcomes return to preparation. You choose evidence for the next judgment. The classifier cannot remember facts it was never given.",
+          "audio_start": 16.95,
+          "audio_seconds": 10.15,
+          "wav": "audio/11_help_state/paragraph-02.wav",
+          "peak": 0.646392822265625,
+          "rms": 0.05084660276770592,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Pi keeps history. Turbo tracks execution. Your code manages business state and context in version one. Persistent records are the foundation; automatic crash continuation remains separate work.",
+          "audio_start": 27.35,
+          "audio_seconds": 13.65,
+          "wav": "audio/11_help_state/paragraph-03.wav",
+          "peak": 0.577056884765625,
+          "rms": 0.05102533474564552,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene11",
+      "narration_wav": "audio/11_help_state/narration.wav",
+      "start": 389.56666666666666,
+      "duration": 41.5,
+      "video_path": "media/videos/film/1080p30/Scene11.mp4"
+    },
+    {
+      "id": "12_close",
+      "title": "Bring your logic. Reuse the foundation.",
+      "chapter": "The payoff",
+      "frames": 764,
+      "audio_seconds": 24.200000000000003,
+      "paragraphs": [
+        {
+          "text": "You bring rules, relevant state, and tool bindings. Turbo supplies judgment-driven flow and optional deeper help. Pi supplies execution and records, alongside your extensions and M C P tools.",
+          "audio_start": 0.5,
+          "audio_seconds": 13.675,
+          "wav": "audio/12_close/paragraph-01.wav",
+          "peak": 0.571044921875,
+          "rms": 0.051315195858478546,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "An independent news agent can reuse these seams. Start with one bounded workflow, evaluate real cases, and focus on what makes your application useful.",
+          "audio_start": 14.425,
+          "audio_seconds": 10.525,
+          "wav": "audio/12_close/paragraph-02.wav",
+          "peak": 0.46502685546875,
+          "rms": 0.051399145275354385,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene12",
+      "narration_wav": "audio/12_close/narration.wav",
+      "start": 431.06666666666666,
+      "duration": 25.466666666666665,
+      "video_path": "media/videos/film/1080p30/Scene12.mp4"
+    }
+  ],
+  "by_id": {
+    "01_problem": {
+      "id": "01_problem",
+      "title": "A label is only the beginning",
+      "chapter": "Why this exists",
+      "frames": 1019,
+      "audio_seconds": 32.449999999999996,
+      "paragraphs": [
+        {
+          "text": "Another ticket arrives. A customer thinks they were charged twice for their May invoice. Their bank shows two debits of two thousand four hundred and ninety nine rupees, and they want help with a refund. A classification helps, but the useful outcome is getting this request to the right team.",
+          "audio_start": 0.5,
+          "audio_seconds": 17.9,
+          "wav": "audio/01_problem/paragraph-01.wav",
+          "peak": 0.548675537109375,
+          "rms": 0.05131632462143898,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Most cases are familiar. Some need investigation. You need a continuing workflow that can judge, investigate, execute, and record what actually happened.",
+          "audio_start": 18.65,
+          "audio_seconds": 10.625,
+          "wav": "audio/01_problem/paragraph-02.wav",
+          "peak": 0.697113037109375,
+          "rms": 0.05223466828465462,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "How much of that machinery should every application rebuild?",
+          "audio_start": 29.525,
+          "audio_seconds": 3.925,
+          "wav": "audio/01_problem/paragraph-03.wav",
+          "peak": 0.4083251953125,
+          "rms": 0.04567398875951767,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene01",
+      "narration_wav": "audio/01_problem/narration.wav",
+      "start": 0.0,
+      "duration": 33.96666666666667,
+      "video_path": "media/videos/film/1080p30/Scene01.mp4"
+    },
+    "02_value": {
+      "id": "02_value",
+      "title": "Keep the product logic. Reuse the agent.",
+      "chapter": "Who needs it",
+      "frames": 851,
+      "audio_seconds": 26.85,
+      "paragraphs": [
+        {
+          "text": "This is for developers turning judgment into work: routing tickets, filtering information, validating requests, and other applications with useful choices.",
+          "audio_start": 0.5,
+          "audio_seconds": 10.225,
+          "wav": "audio/02_value/paragraph-01.wav",
+          "peak": 0.539794921875,
+          "rms": 0.0513424389064312,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Your advantage is knowing your domain. Which facts matter? Which action follows? What deserves investigation?",
+          "audio_start": 10.975,
+          "audio_seconds": 6.975,
+          "wav": "audio/02_value/paragraph-02.wav",
+          "peak": 0.63836669921875,
+          "rms": 0.049045197665691376,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "The goal is to jump-start the agent around that logic: reuse models, tools, records, and deeper help, while keeping application decisions yours.",
+          "audio_start": 18.2,
+          "audio_seconds": 9.65,
+          "wav": "audio/02_value/paragraph-03.wav",
+          "peak": 0.5052490234375,
+          "rms": 0.04927748814225197,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene02",
+      "narration_wav": "audio/02_value/narration.wav",
+      "start": 33.96666666666667,
+      "duration": 28.366666666666667,
+      "video_path": "media/videos/film/1080p30/Scene02.mp4"
+    },
+    "03_human": {
+      "id": "03_human",
+      "title": "Practice turns deliberation into recognition",
+      "chapter": "The human intuition",
+      "frames": 1378,
+      "audio_seconds": 44.425,
+      "paragraphs": [
+        {
+          "text": "Daniel Kahneman described two modes of thinking. System One is automatic: familiar patterns come to mind easily. System Two takes deliberate effort, like working through an unfamiliar problem.",
+          "audio_start": 0.5,
+          "audio_seconds": 13.2,
+          "wav": "audio/03_human/paragraph-01.wav",
+          "peak": 0.6097412109375,
+          "rms": 0.0515223890542984,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Imagine a new support colleague. They read the policy, think through a refund request, and propose a team. A supervisor checks the decision and explains mistakes. After repeated practice, familiar charge issues become easy to recognize.",
+          "audio_start": 13.95,
+          "audio_seconds": 15.775,
+          "wav": "audio/03_human/paragraph-02.wav",
+          "peak": 0.56109619140625,
+          "rms": 0.05262146145105362,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "That learning needs patterns that can actually be learned, and reliable feedback. An unusual case still deserves deliberate thought. The lesson is to develop useful recognition and know its limits, not to trust every first impression.",
+          "audio_start": 29.974999999999998,
+          "audio_seconds": 15.45,
+          "wav": "audio/03_human/paragraph-03.wav",
+          "peak": 0.501190185546875,
+          "rms": 0.05157987400889397,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene03",
+      "narration_wav": "audio/03_human/narration.wav",
+      "start": 62.333333333333336,
+      "duration": 45.93333333333333,
+      "video_path": "media/videos/film/1080p30/Scene03.mp4"
+    },
+    "04_models": {
+      "id": "04_models",
+      "title": "A typed judgment; deliberate help",
+      "chapter": "The model analogy",
+      "frames": 1350,
+      "audio_seconds": 43.2,
+      "paragraphs": [
+        {
+          "text": "A System One model such as Jev supplies a related building block. Information and typed questions go in; usable judgments come out. A Choice selects payments, technical, or S O S.",
+          "audio_start": 0.5,
+          "audio_seconds": 12.575,
+          "wav": "audio/04_models/paragraph-01.wav",
+          "peak": 0.476104736328125,
+          "rms": 0.050414927303791046,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "A Noul answers a yes-or-no question with a probability. Choice also returns probabilities and confidence. Concentrated answers look decisive; confidence does not prove correctness.",
+          "audio_start": 13.325,
+          "audio_seconds": 12.275,
+          "wav": "audio/04_models/paragraph-02.wav",
+          "peak": 0.34320068359375,
+          "rms": 0.05039997771382332,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "A System Two language model can plan and investigate. The aim is lower routine cost and latency, with deeper reasoning available when needed. Jev is already trained. We configure and evaluate inputs and criteria, not its weights. This analogy describes a division of work.",
+          "audio_start": 25.85,
+          "audio_seconds": 18.35,
+          "wav": "audio/04_models/paragraph-03.wav",
+          "peak": 0.40899658203125,
+          "rms": 0.050708264112472534,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene04",
+      "narration_wav": "audio/04_models/narration.wav",
+      "start": 108.26666666666667,
+      "duration": 45.0,
+      "video_path": "media/videos/film/1080p30/Scene04.mp4"
+    },
+    "05_burden": {
+      "id": "05_burden",
+      "title": "The classifier does not run the workflow",
+      "chapter": "What otherwise needs building",
+      "frames": 1050,
+      "audio_seconds": 26.325,
+      "paragraphs": [
+        {
+          "text": "Suppose the classifier works. You still need to execute assignment, check its real result, feed evidence into the next decision, and know when the task is finished.",
+          "audio_start": 0.5,
+          "audio_seconds": 10.325,
+          "wav": "audio/05_burden/paragraph-01.wav",
+          "peak": 0.692169189453125,
+          "rms": 0.05095905065536499,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Add investigation: a helper needs a goal, scoped tools, and a findings return. The session needs records.",
+          "audio_start": 11.075,
+          "audio_seconds": 7.45,
+          "wav": "audio/05_burden/paragraph-02.wav",
+          "peak": 0.573516845703125,
+          "rms": 0.049763087183237076,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "You can build a custom agent for every product. Or reuse that machinery and concentrate on the rules that make your application useful.",
+          "audio_start": 18.775,
+          "audio_seconds": 8.55,
+          "wav": "audio/05_burden/paragraph-03.wav",
+          "peak": 0.44476318359375,
+          "rms": 0.04968037083745003,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene05",
+      "narration_wav": "audio/05_burden/narration.wav",
+      "start": 153.26666666666668,
+      "duration": 35.0,
+      "video_path": "media/videos/film/1080p30/Scene05.mp4"
+    },
+    "06_foundation": {
+      "id": "06_foundation",
+      "title": "Pi is the harness. Turbo changes the driver.",
+      "chapter": "The reusable foundation",
+      "frames": 1315,
+      "audio_seconds": 42.325,
+      "paragraphs": [
+        {
+          "text": "That foundation is Pi: a mature agent harness. In its ordinary loop, an L L M receives a goal and tools, calls a tool, reads its result, and continues until it responds.",
+          "audio_start": 0.5,
+          "audio_seconds": 12.25,
+          "wav": "audio/06_foundation/paragraph-01.wav",
+          "peak": 0.48065185546875,
+          "rms": 0.05091880261898041,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Pi already exposes classifiers such as Jev to extensions and model-callable tools. That makes classification available, without making it the ongoing driver.",
+          "audio_start": 13.0,
+          "audio_seconds": 11.075,
+          "wav": "audio/06_foundation/paragraph-02.wav",
+          "peak": 0.408599853515625,
+          "rms": 0.04939412698149681,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Turbo is a Pi extension that makes typed judgment drive the next step. Native classifier access sits behind a custom provider and selectable virtual model. Pi still executes tools. Other Pi extensions and connected M C P tools remain usable alongside Turbo.",
+          "audio_start": 24.325,
+          "audio_seconds": 19.0,
+          "wav": "audio/06_foundation/paragraph-03.wav",
+          "peak": 0.535064697265625,
+          "rms": 0.050987400114536285,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene06",
+      "narration_wav": "audio/06_foundation/narration.wav",
+      "start": 188.26666666666668,
+      "duration": 43.833333333333336,
+      "video_path": "media/videos/film/1080p30/Scene06.mp4"
+    },
+    "07_flow": {
+      "id": "07_flow",
+      "title": "One ticket. Two possible paths.",
+      "chapter": "High-level architecture",
+      "frames": 1516,
+      "audio_seconds": 49.025000000000006,
+      "paragraphs": [
+        {
+          "text": "Now the complete flow. Our invoice ticket comes with routing policy and verified payment facts: two charges settled. System One selects payments. Pi assigns T42 to that team. Its receipt confirms the assignment, and the workflow finishes this request.",
+          "audio_start": 0.5,
+          "audio_seconds": 17.5,
+          "wav": "audio/07_flow/paragraph-01.wav",
+          "peak": 0.4129638671875,
+          "rms": 0.05217296630144119,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Then a follow-up arrives: checkout says payment failed, and the customer\u2019s team cannot access the service. Is this the same issue? When enabled, System One requests investigation. The helper checks the order and service status through permitted tools.",
+          "audio_start": 18.25,
+          "audio_seconds": 16.35,
+          "wav": "audio/07_flow/paragraph-02.wav",
+          "peak": 0.5802001953125,
+          "rms": 0.05127202346920967,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Outage evidence returns to preparation and the next judgment. System One selects S O S under your policy. Pi assigns and records the new result. System Two supplied help. System One resumed the decision flow.",
+          "audio_start": 34.85,
+          "audio_seconds": 15.175,
+          "wav": "audio/07_flow/paragraph-03.wav",
+          "peak": 0.61187744140625,
+          "rms": 0.05117098242044449,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene07",
+      "narration_wav": "audio/07_flow/narration.wav",
+      "start": 232.1,
+      "duration": 50.53333333333333,
+      "video_path": "media/videos/film/1080p30/Scene07.mp4"
+    },
+    "08_ownership": {
+      "id": "08_ownership",
+      "title": "Your meaning. Turbo coordination. Pi execution.",
+      "chapter": "Responsibility boundaries",
+      "frames": 876,
+      "audio_seconds": 27.675,
+      "paragraphs": [
+        {
+          "text": "Zoom in. Your functions define relevant facts, questions, decision criteria, and what an answer should do.",
+          "audio_start": 0.5,
+          "audio_seconds": 7.05,
+          "wav": "audio/08_ownership/paragraph-01.wav",
+          "peak": 0.506317138671875,
+          "rms": 0.05004771798849106,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Turbo carries that decision through classification, action, consultation, or completion. It checks mechanical constraints and keeps control records.",
+          "audio_start": 7.8,
+          "audio_seconds": 10.075,
+          "wav": "audio/08_ownership/paragraph-02.wav",
+          "peak": 0.662750244140625,
+          "rms": 0.050410136580467224,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Pi owns the session, tools, execution hooks, and continuation. Ticket categories live in your application. That separation makes Turbo reusable.",
+          "audio_start": 18.125,
+          "audio_seconds": 10.55,
+          "wav": "audio/08_ownership/paragraph-03.wav",
+          "peak": 0.38922119140625,
+          "rms": 0.0495467409491539,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene08",
+      "narration_wav": "audio/08_ownership/narration.wav",
+      "start": 282.6333333333333,
+      "duration": 29.2,
+      "video_path": "media/videos/film/1080p30/Scene08.mp4"
+    },
+    "09_connect": {
+      "id": "09_connect",
+      "title": "Connect the capabilities you already use",
+      "chapter": "Configuration and composition",
+      "frames": 832,
+      "audio_seconds": 26.225,
+      "paragraphs": [
+        {
+          "text": "Configure your integration and System One classifier. Optionally enable a System Two model and its allowed tools.",
+          "audio_start": 0.5,
+          "audio_seconds": 8.0,
+          "wav": "audio/09_connect/paragraph-01.wav",
+          "peak": 0.44921875,
+          "rms": 0.04900631681084633,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Register business operations through Pi, an M C P connection, or another extension. Your assignment tool can already exist.",
+          "audio_start": 8.75,
+          "audio_seconds": 8.725,
+          "wav": "audio/09_connect/paragraph-02.wav",
+          "peak": 0.5296630859375,
+          "rms": 0.049088720232248306,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Map the capabilities your workflow needs. The helper gets its granted subset; Pi hooks still apply. Existing integrations remain available.",
+          "audio_start": 17.725,
+          "audio_seconds": 9.5,
+          "wav": "audio/09_connect/paragraph-03.wav",
+          "peak": 0.401214599609375,
+          "rms": 0.04925813898444176,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene09",
+      "narration_wav": "audio/09_connect/narration.wav",
+      "start": 311.8333333333333,
+      "duration": 27.733333333333334,
+      "video_path": "media/videos/film/1080p30/Scene09.mp4"
+    },
+    "10_functions": {
+      "id": "10_functions",
+      "title": "Three small seams you supply",
+      "chapter": "Late integration pseudocode",
+      "frames": 1500,
+      "audio_seconds": 45.825,
+      "paragraphs": [
+        {
+          "text": "Now your code. Prepare the next judgment: load the ticket, routing policy, and relevant evidence. If a real assignment receipt confirms the outcome, return a final decision.",
+          "audio_start": 0.5,
+          "audio_seconds": 11.825,
+          "wav": "audio/10_functions/paragraph-01.wav",
+          "peak": 0.46246337890625,
+          "rms": 0.050992708653211594,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Otherwise, define the question. Ask for the next step and describe each choice: payments, technical, S O S, or investigation when help is available. Your criteria explain the boundaries.",
+          "audio_start": 12.575,
+          "audio_seconds": 12.725,
+          "wav": "audio/10_functions/paragraph-02.wav",
+          "peak": 0.477081298828125,
+          "rms": 0.05068622902035713,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Map the returned answer to an exact action. Payments becomes the registered assignment tool with this ticket ID and team. The tool performs the work.",
+          "audio_start": 25.549999999999997,
+          "audio_seconds": 10.4,
+          "wav": "audio/10_functions/paragraph-03.wav",
+          "peak": 0.5064697265625,
+          "rms": 0.04985988885164261,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Register the preparation function through Turbo. Its flow calls your functions again after results arrive. You supply meaning and bindings; Pi supplies execution.",
+          "audio_start": 36.199999999999996,
+          "audio_seconds": 10.875,
+          "wav": "audio/10_functions/paragraph-04.wav",
+          "peak": 0.40753173828125,
+          "rms": 0.05064530670642853,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene10",
+      "narration_wav": "audio/10_functions/narration.wav",
+      "start": 339.56666666666666,
+      "duration": 50.0,
+      "video_path": "media/videos/film/1080p30/Scene10.mp4"
+    },
+    "11_help_state": {
+      "id": "11_help_state",
+      "title": "Help returns facts. You choose what stays.",
+      "chapter": "Scoped help and state",
+      "frames": 1245,
+      "audio_seconds": 40.0,
+      "paragraphs": [
+        {
+          "text": "For investigation, return a consultation: goal, supplied facts, completion condition, and exact tool grants. The built-in helper runs a scoped native Pi agent. Its L L M can take several tool steps until it finishes the subtask.",
+          "audio_start": 0.5,
+          "audio_seconds": 16.2,
+          "wav": "audio/11_help_state/paragraph-01.wav",
+          "peak": 0.570587158203125,
+          "rms": 0.05136370286345482,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Findings and real tool outcomes return to preparation. You choose evidence for the next judgment. The classifier cannot remember facts it was never given.",
+          "audio_start": 16.95,
+          "audio_seconds": 10.15,
+          "wav": "audio/11_help_state/paragraph-02.wav",
+          "peak": 0.646392822265625,
+          "rms": 0.05084660276770592,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "Pi keeps history. Turbo tracks execution. Your code manages business state and context in version one. Persistent records are the foundation; automatic crash continuation remains separate work.",
+          "audio_start": 27.35,
+          "audio_seconds": 13.65,
+          "wav": "audio/11_help_state/paragraph-03.wav",
+          "peak": 0.577056884765625,
+          "rms": 0.05102533474564552,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene11",
+      "narration_wav": "audio/11_help_state/narration.wav",
+      "start": 389.56666666666666,
+      "duration": 41.5,
+      "video_path": "media/videos/film/1080p30/Scene11.mp4"
+    },
+    "12_close": {
+      "id": "12_close",
+      "title": "Bring your logic. Reuse the foundation.",
+      "chapter": "The payoff",
+      "frames": 764,
+      "audio_seconds": 24.200000000000003,
+      "paragraphs": [
+        {
+          "text": "You bring rules, relevant state, and tool bindings. Turbo supplies judgment-driven flow and optional deeper help. Pi supplies execution and records, alongside your extensions and M C P tools.",
+          "audio_start": 0.5,
+          "audio_seconds": 13.675,
+          "wav": "audio/12_close/paragraph-01.wav",
+          "peak": 0.571044921875,
+          "rms": 0.051315195858478546,
+          "clipped_samples": 0,
+          "finite": true
+        },
+        {
+          "text": "An independent news agent can reuse these seams. Start with one bounded workflow, evaluate real cases, and focus on what makes your application useful.",
+          "audio_start": 14.425,
+          "audio_seconds": 10.525,
+          "wav": "audio/12_close/paragraph-02.wav",
+          "peak": 0.46502685546875,
+          "rms": 0.051399145275354385,
+          "clipped_samples": 0,
+          "finite": true
+        }
+      ],
+      "class_name": "Scene12",
+      "narration_wav": "audio/12_close/narration.wav",
+      "start": 431.06666666666666,
+      "duration": 25.466666666666665,
+      "video_path": "media/videos/film/1080p30/Scene12.mp4"
+    }
+  }
+}

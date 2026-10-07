@@ -1,0 +1,515 @@
+WEBVTT
+
+1
+00:00:00.500 --> 00:00:01.574
+Another ticket arrives.
+
+2
+00:00:01.574 --> 00:00:05.512
+A customer thinks they were charged twice for
+their May invoice.
+
+3
+00:00:05.512 --> 00:00:11.240
+Their bank shows two debits of two thousand four
+hundred and ninety nine rupees, and they
+
+4
+00:00:11.240 --> 00:00:13.030
+want help with a refund.
+
+5
+00:00:13.030 --> 00:00:18.400
+A classification helps, but the useful outcome
+is getting this request to the right team.
+
+6
+00:00:18.650 --> 00:00:20.582
+Most cases are familiar.
+
+7
+00:00:20.582 --> 00:00:22.031
+Some need investigation.
+
+8
+00:00:22.031 --> 00:00:29.275
+You need a continuing workflow that can judge,
+investigate, execute, and record what actually
+happened.
+
+9
+00:00:29.525 --> 00:00:33.450
+How much of that machinery should every
+application rebuild?
+
+10
+00:00:34.467 --> 00:00:42.647
+This is for developers turning judgment into
+work: routing tickets, filtering information,
+validating requests, and other
+
+11
+00:00:42.647 --> 00:00:44.692
+applications with useful choices.
+
+12
+00:00:44.942 --> 00:00:47.732
+Your advantage is knowing your domain.
+
+13
+00:00:47.732 --> 00:00:49.127
+Which facts matter?
+
+14
+00:00:49.127 --> 00:00:50.522
+Which action follows?
+
+15
+00:00:50.522 --> 00:00:51.917
+What deserves investigation?
+
+16
+00:00:52.167 --> 00:00:59.185
+The goal is to jump-start the agent around that
+logic: reuse models, tools, records, and deeper
+
+17
+00:00:59.185 --> 00:01:01.817
+help, while keeping application decisions yours.
+
+18
+00:01:02.833 --> 00:01:06.133
+Daniel Kahneman described two modes of thinking.
+
+19
+00:01:06.133 --> 00:01:10.848
+System One is automatic: familiar patterns come
+to mind easily.
+
+20
+00:01:10.848 --> 00:01:16.033
+System Two takes deliberate effort, like working
+through an unfamiliar problem.
+
+21
+00:01:16.283 --> 00:01:18.474
+Imagine a new support colleague.
+
+22
+00:01:18.474 --> 00:01:24.171
+They read the policy, think through a refund
+request, and propose a team.
+
+23
+00:01:24.171 --> 00:01:27.676
+A supervisor checks the decision and explains
+mistakes.
+
+24
+00:01:27.676 --> 00:01:32.058
+After repeated practice, familiar charge issues
+become easy to recognize.
+
+25
+00:01:32.308 --> 00:01:37.458
+That learning needs patterns that can actually
+be learned, and reliable feedback.
+
+26
+00:01:37.458 --> 00:01:40.462
+An unusual case still deserves deliberate
+thought.
+
+27
+00:01:40.462 --> 00:01:47.329
+The lesson is to develop useful recognition and
+know its limits, not to trust every first
+
+28
+00:01:47.329 --> 00:01:47.758
+impression.
+
+29
+00:01:48.767 --> 00:01:53.970
+A System One model such as Jev supplies a
+related building block.
+
+30
+00:01:53.970 --> 00:01:58.306
+Information and typed questions go in; usable
+judgments come out.
+
+31
+00:01:58.306 --> 00:02:01.342
+A Choice selects payments, technical, or SOS.
+
+32
+00:02:01.592 --> 00:02:06.195
+A Noul answers a yes-or-no question with a
+probability.
+
+33
+00:02:06.195 --> 00:02:09.264
+Choice also returns probabilities and
+confidence.
+
+34
+00:02:09.264 --> 00:02:13.867
+Concentrated answers look decisive; confidence
+does not prove correctness.
+
+35
+00:02:14.117 --> 00:02:17.870
+A System Two language model can plan and
+investigate.
+
+36
+00:02:17.870 --> 00:02:23.709
+The aim is lower routine cost and latency, with
+deeper reasoning available when needed.
+
+37
+00:02:23.709 --> 00:02:25.377
+Jev is already trained.
+
+38
+00:02:25.377 --> 00:02:29.547
+We configure and evaluate inputs and criteria,
+not its weights.
+
+39
+00:02:29.547 --> 00:02:32.467
+This analogy describes a division of work.
+
+40
+00:02:33.767 --> 00:02:35.296
+Suppose the classifier works.
+
+41
+00:02:35.296 --> 00:02:41.415
+You still need to execute assignment, check its
+real result, feed evidence into the next
+decision,
+
+42
+00:02:41.415 --> 00:02:44.092
+and know when the task is finished.
+
+43
+00:02:44.342 --> 00:02:50.039
+Add investigation: a helper needs a goal, scoped
+tools, and a findings return.
+
+44
+00:02:50.039 --> 00:02:51.792
+The session needs records.
+
+45
+00:02:52.042 --> 00:02:55.387
+You can build a custom agent for every product.
+
+46
+00:02:55.387 --> 00:03:00.592
+Or reuse that machinery and concentrate on the
+rules that make your application useful.
+
+47
+00:03:08.767 --> 00:03:12.033
+That foundation is Pi: a mature agent harness.
+
+48
+00:03:12.033 --> 00:03:18.567
+In its ordinary loop, an LLM receives a goal and
+tools, calls a tool, reads its
+
+49
+00:03:18.567 --> 00:03:21.017
+result, and continues until it responds.
+
+50
+00:03:21.267 --> 00:03:27.308
+Pi already exposes classifiers such as Jev to
+extensions and model-callable tools.
+
+51
+00:03:27.308 --> 00:03:32.342
+That makes classification available, without
+making it the ongoing driver.
+
+52
+00:03:32.592 --> 00:03:38.767
+Turbo is a Pi extension that makes typed
+judgment drive the next step.
+
+53
+00:03:38.767 --> 00:03:44.467
+Native classifier access sits behind a custom
+provider and selectable virtual model.
+
+54
+00:03:44.467 --> 00:03:46.367
+Pi still executes tools.
+
+55
+00:03:46.367 --> 00:03:51.592
+Other Pi extensions and connected MCP tools
+remain usable alongside Turbo.
+
+56
+00:03:52.600 --> 00:03:54.395
+Now the complete flow.
+
+57
+00:03:54.395 --> 00:04:00.677
+Our invoice ticket comes with routing policy and
+verified payment facts: two charges settled.
+
+58
+00:04:00.677 --> 00:04:02.472
+System One selects payments.
+
+59
+00:04:02.472 --> 00:04:05.164
+Pi assigns T42 to that team.
+
+60
+00:04:05.164 --> 00:04:10.100
+Its receipt confirms the assignment, and the
+workflow finishes this request.
+
+61
+00:04:10.350 --> 00:04:17.234
+Then a follow-up arrives: checkout says payment
+failed, and the customer’s team cannot access
+the service.
+
+62
+00:04:17.234 --> 00:04:19.386
+Is this the same issue?
+
+63
+00:04:19.386 --> 00:04:21.967
+When enabled, System One requests investigation.
+
+64
+00:04:21.967 --> 00:04:26.700
+The helper checks the order and service status
+through permitted tools.
+
+65
+00:04:26.950 --> 00:04:31.089
+Outage evidence returns to preparation and the
+next judgment.
+
+66
+00:04:31.089 --> 00:04:34.308
+System One selects SOS under your policy.
+
+67
+00:04:34.308 --> 00:04:37.527
+Pi assigns and records the new result.
+
+68
+00:04:37.527 --> 00:04:39.366
+System Two supplied help.
+
+69
+00:04:39.366 --> 00:04:42.125
+System One resumed the decision flow.
+
+70
+00:04:43.133 --> 00:04:44.015
+Zoom in.
+
+71
+00:04:44.015 --> 00:04:50.183
+Your functions define relevant facts, questions,
+decision criteria, and what an answer should do.
+
+72
+00:04:50.433 --> 00:04:56.031
+Turbo carries that decision through
+classification, action, consultation, or
+completion.
+
+73
+00:04:56.031 --> 00:05:00.508
+It checks mechanical constraints and keeps
+control records.
+
+74
+00:05:00.758 --> 00:05:05.506
+Pi owns the session, tools, execution hooks, and
+continuation.
+
+75
+00:05:05.506 --> 00:05:08.671
+Ticket categories live in your application.
+
+76
+00:05:08.671 --> 00:05:11.308
+That separation makes Turbo reusable.
+
+77
+00:05:12.333 --> 00:05:15.627
+Configure your integration and System One
+classifier.
+
+78
+00:05:15.627 --> 00:05:20.333
+Optionally enable a System Two model and its
+allowed tools.
+
+79
+00:05:20.583 --> 00:05:26.229
+Register business operations through Pi, an MCP
+connection, or another extension.
+
+80
+00:05:26.229 --> 00:05:29.308
+Your assignment tool can already exist.
+
+81
+00:05:29.558 --> 00:05:32.408
+Map the capabilities your workflow needs.
+
+82
+00:05:32.408 --> 00:05:37.158
+The helper gets its granted subset; Pi hooks
+still apply.
+
+83
+00:05:37.158 --> 00:05:39.058
+Existing integrations remain available.
+
+84
+00:05:40.067 --> 00:05:41.381
+Now your code.
+
+85
+00:05:41.381 --> 00:05:46.636
+Prepare the next judgment: load the ticket,
+routing policy, and relevant evidence.
+
+86
+00:05:46.636 --> 00:05:51.892
+If a real assignment receipt confirms the
+outcome, return a final decision.
+
+87
+00:05:52.142 --> 00:05:54.027
+Otherwise, define the question.
+
+88
+00:05:54.027 --> 00:06:01.568
+Ask for the next step and describe each choice:
+payments, technical, SOS, or investigation when
+help
+
+89
+00:06:01.568 --> 00:06:02.510
+is available.
+
+90
+00:06:02.510 --> 00:06:04.867
+Your criteria explain the boundaries.
+
+91
+00:06:05.117 --> 00:06:08.445
+Map the returned answer to an exact action.
+
+92
+00:06:08.445 --> 00:06:13.437
+Payments becomes the registered assignment tool
+with this ticket ID and team.
+
+93
+00:06:13.437 --> 00:06:15.517
+The tool performs the work.
+
+94
+00:06:15.767 --> 00:06:18.604
+Register the preparation function through Turbo.
+
+95
+00:06:18.604 --> 00:06:22.859
+Its flow calls your functions again after
+results arrive.
+
+96
+00:06:22.859 --> 00:06:26.642
+You supply meaning and bindings; Pi supplies
+execution.
+
+97
+00:06:30.067 --> 00:06:36.547
+For investigation, return a consultation: goal,
+supplied facts, completion condition, and exact
+tool grants.
+
+98
+00:06:36.547 --> 00:06:40.712
+The built-in helper runs a scoped native Pi
+agent.
+
+99
+00:06:40.712 --> 00:06:46.267
+Its LLM can take several tool steps until it
+finishes the subtask.
+
+100
+00:06:46.517 --> 00:06:49.900
+Findings and real tool outcomes return to
+preparation.
+
+101
+00:06:49.900 --> 00:06:52.860
+You choose evidence for the next judgment.
+
+102
+00:06:52.860 --> 00:06:56.667
+The classifier cannot remember facts it was
+never given.
+
+103
+00:06:56.917 --> 00:06:58.433
+Pi keeps history.
+
+104
+00:06:58.433 --> 00:06:59.950
+Turbo tracks execution.
+
+105
+00:06:59.950 --> 00:07:05.006
+Your code manages business state and context in
+version one.
+
+106
+00:07:05.006 --> 00:07:10.567
+Persistent records are the foundation; automatic
+crash continuation remains separate work.
+
+107
+00:07:11.567 --> 00:07:15.619
+You bring rules, relevant state, and tool
+bindings.
+
+108
+00:07:15.619 --> 00:07:19.670
+Turbo supplies judgment-driven flow and optional
+deeper help.
+
+109
+00:07:19.670 --> 00:07:25.242
+Pi supplies execution and records, alongside
+your extensions and MCP tools.
+
+110
+00:07:25.492 --> 00:07:29.000
+An independent news agent can reuse these seams.
+
+111
+00:07:29.000 --> 00:07:36.017
+Start with one bounded workflow, evaluate real
+cases, and focus on what makes your application
+useful.

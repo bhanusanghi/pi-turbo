@@ -1,0 +1,35 @@
+1
+00:00:00,300 --> 00:00:06,300
+A ticket arrives. You need more than a label. You need the
+right action, and a recorded result.
+
+2
+00:00:08,767 --> 00:00:15,442
+Charged twice. System One selects payments. Pi runs the
+assignment tool and records the outcome.
+
+3
+00:00:16,800 --> 00:00:22,675
+Now change the ticket. Payment failed, and the service is
+down. This needs more evidence.
+
+4
+00:00:24,033 --> 00:00:30,258
+When enabled, System One asks System Two to investigate,
+using only the tools you permit.
+
+5
+00:00:31,600 --> 00:00:36,875
+The helper checks the order and service status, then returns
+evidence of an outage.
+
+6
+00:00:38,733 --> 00:00:45,558
+System One uses that evidence to choose SOS. Pi assigns the
+ticket and records the result.
+
+7
+00:00:46,900 --> 00:00:58,450
+Turbo connects the flow. You supply the policy and relevant
+state. Keep your Pi extensions and MCP tools. Fast judgments
+drive. Deeper reasoning helps when needed.
