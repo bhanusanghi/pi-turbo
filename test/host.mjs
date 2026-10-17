@@ -1,12 +1,14 @@
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import assert from 'node:assert/strict';
 import { createAssistantMessageEventStream } from '@earendil-works/pi-ai';
-import { createAgentSession, DefaultResourceLoader, ModelRuntime, SettingsManager, SessionManager } from '@earendil-works/pi-coding-agent';
-import { createTurboExtension } from '../dist/index.js';
+import { createModels } from '@earendil-works/pi-ai/models';
+import { Harness, createRegistry, defineExtension } from '@earendil-works/pi-durable';
+import { openNodeSqliteStorage } from '@earendil-works/pi-durable/storage/sqlite/node';
+import { BACKGROUND_CONTEXT } from '@earendil-works/chord/context';
+import { createTurbo } from '../dist/index.js';
 import { zeroUsage } from '../dist/runtime/protocol.js';
-
+export const context = BACKGROUND_CONTEXT;
 export const classifier = { provider: 'fixture', id: 'jev', type: 'classifier', api: 'fixture-classifier',
   name: 'Test inference', baseUrl: '', input: ['text'], contextWindow: 64000,
   cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } };
@@ -25,41 +27,50 @@ export function response(content, extras = {}) {
     stopReason: content.some(c => c.type === 'toolCall') ? 'toolUse' : 'stop',
     usage: { ...zeroUsage(), input: 20, output: 2, totalTokens: 22 }, ...extras };
 }
-export async function host({ companion, classify, helper, order = 'turbo-first', options = {}, extensions = [], settings = {}, sessionManager } = {}) {
-  const dir = await mkdtemp(join(tmpdir(), 'pi-turbo-test-'));
+export async function host({ integration, tools = [], classify = req => choose(req, 'go'), helper,
+  system2, extensions = [], settings = {}, init, dir: suppliedDir, extraTasks = [], turboFactory = createTurbo } = {}) {
+  const dir = suppliedDir ?? await mkdtemp(join(tmpdir(), 'pi-turbo-durable-'));
   const seen = { classifications: [], helper: [], errors: [] };
-  const mock = pi => pi.registerProvider({
-    id: 'fixture', name: 'Inference double', auth: { apiKey: { name: 'test', resolve: async () => ({ auth: { apiKey: 'test-local' }, source: 'test' }) } },
+  const models = createModels();
+  models.setProvider({ id: 'fixture', name: 'Inference double',
+    auth: { apiKey: { name: 'test', resolve: async () => ({ auth: {}, source: 'fixture' }) } },
     getModels: () => [llm], getAllModels: () => [llm, classifier],
     classify: async (_model, request, opts) => { seen.classifications.push(structuredClone(request)); return classify(request, opts); },
     stream(...args) { return this.streamSimple(...args); },
-    streamSimple(_model, context, opts) {
-      const stream = createAssistantMessageEventStream(); seen.helper.push(structuredClone(context));
+    streamSimple(_model, input, opts) {
+      const events = createAssistantMessageEventStream(); seen.helper.push(structuredClone(input));
       void (async () => {
-        try { const msg = await helper(context, opts); stream.push({ type: 'start', partial: msg });
-          if (msg.stopReason === 'error' || msg.stopReason === 'aborted') stream.push({ type: 'error', reason: msg.stopReason, error: msg });
-          else stream.push({ type: 'done', reason: msg.stopReason, message: msg }); stream.end(msg);
-        } catch (error) { const msg = response([], { stopReason: opts?.signal?.aborted ? 'aborted' : 'error', errorMessage: String(error) });
-          stream.push({ type: 'error', reason: msg.stopReason, error: msg }); stream.end(msg); }
-      })(); return stream;
+        let msg;
+        try { msg = await helper(input, opts); }
+        catch (error) { msg = response([], { stopReason: opts?.signal?.aborted ? 'aborted' : 'error', errorMessage: String(error) }); }
+        events.push({ type: 'start', partial: msg });
+        if (['error', 'aborted'].includes(msg.stopReason)) events.push({ type: 'error', reason: msg.stopReason, error: msg });
+        else events.push({ type: 'done', reason: msg.stopReason, message: msg });
+        events.end(msg);
+      })();
+      return events;
     },
   });
-  const turbo = createTurboExtension({ classifier: { provider: 'fixture', id: 'jev' }, timeoutMs: 10000, ...options });
-  const settingsManager = SettingsManager.inMemory({ compaction: { enabled: true }, retry: { enabled: true, maxRetries: 1, baseDelayMs: 1 }, ...settings });
-  const modelRuntime = await ModelRuntime.create({ authPath: join(dir, 'auth.json'), modelsPath: null,
-    modelsStorePath: join(dir, 'models-cache.json'), refreshOnCreate: false });
-  const loader = new DefaultResourceLoader({ cwd: dir, agentDir: dir, settingsManager, noExtensions: true,
-    disabledBuiltinExtensions: ['mcp', 'codemode'], noSkills: true, noThemes: true, noContextFiles: true, noPromptTemplates: true,
-    extensionFactories: [mock, ...(order === 'turbo-first' ? [turbo, companion] : [companion, turbo]), ...extensions].filter(Boolean) });
-  await loader.reload();
-  assert.deepEqual(loader.getExtensions().errors, []);
-  const { session } = await createAgentSession({ cwd: dir, agentDir: dir, modelRuntime, resourceLoader: loader,
-    sessionManager: sessionManager ?? SessionManager.inMemory(dir), settingsManager, noTools: 'builtin' });
-  await session.bindExtensions({ onError: e => seen.errors.push(e) });
-  const virtual = modelRuntime.getModel('turbo', 'auto');
-  assert.ok(virtual, 'native virtual model registered');
-  await session.setModel(virtual);
-  return { session, seen, modelRuntime, loader, dir,
-    control: () => session.sessionManager.getBranch().findLast(e => e.type === 'custom' && e.customType === 'pi-turbo/control-v1')?.data,
-    close: async () => { await session.abort(); session.dispose(); await rm(dir, { recursive: true, force: true }); } };
+  const turbo = turboFactory({ integration, tools, classifier: { provider: 'fixture', modelId: 'jev' }, ...(system2 ? { system2 } : {}) });
+  const registry = createRegistry();
+  const product = defineExtension({ name: 'product', tools, tasks: extraTasks });
+  registry.install(product); registry.install(turbo.extension);
+  for (const extension of extensions) registry.install(extension);
+  models.setProvider(turbo.provider);
+  const harness = await Harness.open(await openNodeSqliteStorage(join(dir, 'session.sqlite')), {
+    registry, models, onReport: error => seen.errors.push(error), settings: {
+      compaction: { enabled: false }, retry: { enabled: false }, toolExecution: 'sequential', ...settings,
+    },
+  }, context);
+  const root = await harness.root(context, { agent: { model: turbo.model,
+    extensions: [product, turbo.extension, ...extensions], tools: [...tools, turbo.consultTool] }, ...(init ? { init } : {}) });
+  return { dir, harness, root, models, registry, turbo, product, seen,
+    run: async (content = 'run', requestId) => (await root.submit({ type: 'input', content, ...(requestId ? { requestId } : {}) }, context)).wait(context),
+    messages: async () => (await root.context(context)).messages,
+    close: () => harness.close(context),
+    cleanup: () => rm(dir, { recursive: true, force: true }),
+  };
 }
+export const helpOptions = { enabled: true, model: { provider: 'fixture', modelId: 'helper' }, tools: [], maxTurns: 3, maxToolCalls: 3, timeoutMs: 2000 };
+export const question = state => ({ state, questions: { next: { type: 'choice', instructions: 'Select the authored next action', criteria: { go: 'Continue' } } } });
+export const finish = (status = 'completed') => tool('turbo_test_finish', { status, findings: 'Evidence checked', sources: ['source-A'], uncertainties: [] });
