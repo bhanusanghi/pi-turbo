@@ -1,5 +1,7 @@
+import type { JsonValue } from "@earendil-works/chord";
+import type { JsonObject } from "@earendil-works/pi-durable";
 import { isDeepStrictEqual } from "node:util";
-import type { ClassifierContext, ClassifierResult, JsonObject, JsonValue, Usage } from "@earendil-works/pi-ai";
+import type { ClassifierContext, ClassifierResult, Usage } from "@earendil-works/pi-ai";
 import type { HelperToolGrant } from "../contracts.js";
 export const zeroUsage = (): Usage => ({ input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0,
   cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } });
@@ -31,12 +33,6 @@ export function object(value: unknown): asserts value is JsonObject {
   visit(value);
 }
 export const same = (a: unknown, b: unknown): boolean => isDeepStrictEqual(a, b);
-/** Preserve the validated binding through later mutable Pi hooks. */
-export function freezeArguments(value: unknown): void {
-  if (!value || typeof value !== "object" || Object.isFrozen(value)) return;
-  Object.values(value).forEach(freezeArguments);
-  Object.freeze(value);
-}
 export function permitted(grants: readonly HelperToolGrant[], name: string, args: unknown): boolean {
   const grant = grants.find(g => g.name === name);
   return !!grant && (grant.allowAnyArguments === true || grant.arguments.some(a => same(a, args)));

@@ -2,18 +2,18 @@
   "name": "pi-turbo",
   "version": "0.0.0",
   "private": true,
-  "description": "Author-managed System 1 decisions on Pi, with optional scoped System 2 consultation.",
+  "description": "System 1 decisions and scoped System 2 consultation for Pi Durable applications.",
   "license": "MIT",
   "type": "module",
   "keywords": [
-    "pi-package",
+    "pi-durable",
     "pi-extension",
     "system1",
     "jev",
     "agent-runtime"
   ],
   "engines": {
-    "node": ">=22.19.0"
+    "bun": ">=1.4.3"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -30,36 +30,39 @@
   "files": [
     "src",
     "dist",
-    "docs",
-    "examples",
+    "docs/development.md",
+    "docs/releasing.md",
+    "docs/durable-migration.md",
+    "docs/v1-implementation.md",
+    "docs/implementation-plan.md",
     "README.md",
     "ARCHITECTURE.md",
     "CHANGELOG.md",
-    "LICENSE"
+    "LICENSE",
+    "scripts",
+    ".bun-version"
   ],
-  "pi": {
-    "extensions": [
-      "./src/extension.ts"
-    ]
-  },
   "scripts": {
-    "check": "tsc --noEmit",
-    "build": "tsc",
-    "test": "npm run build && node --test test/*.test.mjs",
-    "prepack": "npm run build",
-    "prepublishOnly": "npm run check && npm run build"
+    "check": "bun node_modules/typescript/bin/tsc --noEmit",
+    "build": "bun scripts/build.ts",
+    "test": "bun run build && bun test",
+    "prepack": "bun run build",
+    "prepublishOnly": "bun run check && bun run test"
   },
   "peerDependencies": {
-    "@earendil-works/pi-coding-agent": "*",
-    "@earendil-works/pi-agent-core": "*",
-    "@earendil-works/pi-ai": "*"
+    "@earendil-works/pi-durable": "1.2.0",
+    "@earendil-works/pi-ai": "1.2.0",
+    "@earendil-works/chord": "1.2.0"
   },
   "devDependencies": {
-    "@earendil-works/pi-coding-agent": "1.0.4",
-    "@types/node": "^22.19.19",
-    "typescript": "~5.9.3"
+    "@earendil-works/pi-durable": "1.2.0",
+    "@earendil-works/pi-ai": "1.2.0",
+    "@earendil-works/chord": "1.2.0",
+    "typescript": "~5.9.3",
+    "@types/bun": "1.4.3"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "packageManager": "bun@1.4.3"
 }
