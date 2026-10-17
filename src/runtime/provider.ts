@@ -1,55 +1,59 @@
-import { createAssistantMessageEventStream, type AssistantMessage, type Model, type Provider, type SimpleStreamOptions, type TranscriptContext } from "@earendil-works/pi-ai";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { createAssistantMessageEventStream, type AssistantMessage, type Message, type Model, type Provider } from "@earendil-works/pi-ai";
 import { zeroUsage } from "./protocol.js";
-export const SYSTEM1_MODEL: Model<"turbo-system-one"> = {
-  id: "system1", name: "Turbo System 1 Adapter", provider: "turbo", api: "turbo-system-one", baseUrl: "",
-  reasoning: false, input: ["text"], contextWindow: 64_000, maxTokens: 4096,
-  cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-};
-export function message(): AssistantMessage {
-  return { role: "assistant", content: [], provider: "turbo", model: "system1", api: "turbo-system-one",
+
+export function assistant(provider: string, model = "system1"): AssistantMessage {
+  return { role: "assistant", content: [], provider, model, api: "turbo-durable",
     usage: zeroUsage(), stopReason: "stop", timestamp: Date.now() };
 }
-export function system1Provider(run: (context: TranscriptContext, options: SimpleStreamOptions) => Promise<AssistantMessage>): Provider {
-  const stream: Provider["streamSimple"] = (_model, context, options = {}) => {
+
+/** Request-local, authenticated transport. No mutable current conversation or model loop. */
+export function createBridge(id: string) {
+  const secret = randomBytes(32);
+  const sign = (text: string) => createHmac("sha256", secret).update(text).digest("hex");
+  const models: Model<"turbo-durable">[] = ["system1", "system2"].map(model => ({
+    id: model, name: `${id} ${model} decision transport`, provider: id, api: "turbo-durable", baseUrl: "",
+    reasoning: false, input: ["text"], contextWindow: 0, maxTokens: 4096,
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+  }));
+  function envelope(message: AssistantMessage): readonly Message[] {
+    const body = JSON.stringify(message);
+    return [{ role: "user", content: JSON.stringify({ body, signature: sign(body) }), timestamp: Date.now() }];
+  }
+  const stream: Provider["streamSimple"] = (model, transcript, options = {}) => {
     const events = createAssistantMessageEventStream();
-    void (async () => {
-      let output = message();
-      events.push({ type: "start", partial: output });
-      try { output = await run(context, options); }
-      catch (error) {
-        output.stopReason = options.signal?.aborted ? "aborted" : "error";
-        output.errorMessage = error instanceof Error ? error.message : String(error);
+    let output = assistant(id, model.id);
+    try {
+      options.signal?.throwIfAborted();
+      const last = transcript.messages.at(-1);
+      if (last?.role !== "user" || typeof last.content !== "string") throw new Error("Missing prepared Turbo decision");
+      const { body, signature } = JSON.parse(last.content) as { body: string; signature: string };
+      if (typeof body !== "string" || typeof signature !== "string" || signature.length !== 64
+        || !timingSafeEqual(Buffer.from(signature), Buffer.from(sign(body)))) throw new Error("Invalid prepared Turbo decision");
+      output = JSON.parse(body) as AssistantMessage;
+    } catch (error) {
+      output.stopReason = options.signal?.aborted ? "aborted" : "error";
+      output.errorMessage = error instanceof Error ? error.message : "Missing prepared Turbo decision";
+    }
+    events.push({ type: "start", partial: output });
+    if (output.stopReason === "error" || output.stopReason === "aborted") {
+      events.push({ type: "error", reason: output.stopReason, error: output });
+    } else {
+      for (const [contentIndex, block] of output.content.entries()) {
+        if (block.type === "toolCall") events.push({ type: "toolcall_end", contentIndex, toolCall: block, partial: output });
+        if (block.type === "text") events.push({ type: "text_end", contentIndex, content: block.text, partial: output });
       }
-      if (output.stopReason === "error" || output.stopReason === "aborted") {
-        events.push({ type: "error", reason: output.stopReason, error: output });
-      } else {
-        output.content.forEach((block, contentIndex) => {
-          if (block.type === "toolCall") {
-            events.push({ type: "toolcall_start", contentIndex, partial: output });
-            events.push({ type: "toolcall_delta", contentIndex, delta: JSON.stringify(block.arguments), partial: output });
-            events.push({ type: "toolcall_end", contentIndex, toolCall: block, partial: output });
-          } else if (block.type === "text") {
-            events.push({ type: "text_start", contentIndex, partial: output });
-            events.push({ type: "text_delta", contentIndex, delta: block.text, partial: output });
-            events.push({ type: "text_end", contentIndex, content: block.text, partial: output });
-          }
-        });
-        events.push({ type: "done", reason: output.stopReason as "stop" | "toolUse", message: output });
-      }
-      events.end(output);
-    })();
+      events.push({ type: "done", reason: output.stopReason as "stop" | "toolUse" | "length", message: output });
+    }
+    events.end(output);
     return events;
   };
-  return { id: "turbo", name: "Turbo", auth: { apiKey: { name: "Native Pi classifier",
-    async check() { return { type: "api_key", source: "local Adapter (no network)" }; },
-    async resolve() { return { auth: {}, source: "local Adapter (no network)" }; } } },
-    getModels: () => [SYSTEM1_MODEL],
-    stream(model, context, options) {
-      return stream(model, context, {
-        ...(options?.signal ? { signal: options.signal } : {}),
-        ...(options?.onPayload ? { onPayload: options.onPayload } : {}),
-        ...(options?.onResponse ? { onResponse: options.onResponse } : {}),
-        ...(options?.onProviderStreamEvent ? { onProviderStreamEvent: options.onProviderStreamEvent } : {}),
-      });
-    }, streamSimple: stream };
+  const provider: Provider = {
+    id, name: id,
+    auth: { apiKey: { name: "Local durable decision transport", resolve: async () => ({ auth: {}, source: "local" }) } },
+    getModels: () => models,
+    stream: (model, transcript, options) => stream(model, transcript, options?.signal ? { signal: options.signal } : {}),
+    streamSimple: stream,
+  };
+  return { provider, envelope };
 }
