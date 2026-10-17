@@ -124,9 +124,10 @@ Source target, connection, initial time and mode are immutable; create a new sou
 
 | File | Responsibility |
 | --- | --- |
-| `src/sources/tradingview.ts` | Two fixed HTTP transports, secret resolution, headline normalization, bounded snapshots |
-| `src/sources/tradingview-webhook.ts` | Local receiver credential, symbol binding and guarded common ingress |
-| Shared contracts/schema/factory/CLI | Explicit connection variants, `watch.mode`, provenance and registration |
+| `src/providers/tradingview/client.ts` | Two fixed HTTP transports, secret resolution, headline normalization, bounded snapshots |
+| `src/providers/tradingview/webhook.ts` | Local receiver credential, symbol binding and guarded common ingress |
+| `src/providers/tradingview/index.ts` | Closed connection schemas, target/mode policy, CLI configuration and receiver registration |
+| Shared source core | Scheduling, authentication delegation, guarded push admission, queues and storage; unchanged by this PR |
 | Existing source store/runtime | Poll scheduling, checkpoint commits, cancellation, connection backoff |
 | Existing ingress/queues | Input revisions, deduplication, pending evaluation |
 
