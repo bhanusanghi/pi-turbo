@@ -1,503 +1,207 @@
 # pi-turbo architecture
 
-Implementation and research updated **2026-10-07**. **Turbo V1 is implemented locally**:
-`registerSystem1`, `turbo/auto`, the native Jev Adapter, lifecycle guards and optional
-scoped System 2. The [Hyperliquid/news companion](examples/hyperliquid-news/README.md)
-is runnable. [Interactive walkthrough](docs/visuals/hyperliquid-news.html).
+Implemented against **Pi Durable 1.2.0**, hosted on **Bun 1.4.3**. Turbo supplies a System 1 decision interface and reusable System 2 consultation. Applications own ordinary Durable tools and documents.
 
-Native Pi integration, author-state and HTTP-adapter tests pass with substituted
-inference/network boundaries. Live Jev accuracy, external delivery and power-loss
-recovery remain unverified. Extended/V2 examples below remain explicitly pseudocode.
+The former coding-agent architecture is available at baseline Git commit `404d6db`. This document describes the current Durable runtime contract. [Before/after comparison](docs/durable-migration.md) · [verification](docs/development.md) · [application example](examples/hyperliquid-news/README.md).
 
-Start with the diagrams. Details: [news walkthrough](examples/news-agent/README.md),
-[Jev research](docs/research/jev-state-and-limits.md), [Pi research](docs/research/pi-integration.md),
-[Pi Durable applicability table](docs/research/pi-durable-applicability.md),
-and [implementation plan](docs/implementation-plan.md).
+The [Hyperliquid portfolio-monitor foundation](examples/portfolio-monitor/README.md) implements ordinary ingress, portfolio, database, queue and delivery modules plus optional native application tools. Its evaluator remains disconnected: Jev state/questions, turns, Turbo calls and System 2 policy await the user's next design step. The application README distinguishes implemented foundation behavior from deferred evaluation.
 
-For the concrete V1 file layout, author functions and Pi integration, see
-[V1 implementation](docs/v1-implementation.md).
+Its [shared source core](examples/portfolio-monitor/SOURCES.md) owns connection validation, scheduling, guarded ingress and checkpoint commitment. Inbound integrations install trusted registrations; the core has no Telegram, X or TradingView collector dependency. Provider-specific configuration and message semantics stay with those registrations. The [shared-core map](docs/shared-core.md) defines the common base for the separate source PRs. This extraction does not change Turbo's decision interface or Durable's execution lifecycle.
 
-## Release scope: V1 first, automatic state management in V2
+## Ownership: the agreed scope
 
-**V1 assumes the author supplies state and questions within the selected model's
-limits.** Turbo runs that prepared decision contract and handles exceptions. It
-does not automatically split questions, shrink state, retrieve related evidence,
-summarize, or consult System 2 to repair oversized input.
-
-**V2 adds automatic state/context management and an optional story-memory Module.**
-The author configures what relationships matter; reusable machinery can find
-candidates, ask Jev about connections, retain groups and prepare bounded context.
-
-| Capability | V1 | V2 |
+| Application author/operator owns | Turbo supplies | Pi Durable supplies |
 | --- | --- | --- |
-| Jev driver, authored request/resolver, native Pi execution | Implemented | Retain |
-| User-enabled, scoped multi-tool System 2 handover | Implemented | Retain |
-| State/context supplied and updated by author | Required | Still supported |
-| Manual read/write/history/context tools | Expose native Pi primitives and author preparation hooks | Retain; add conveniences as needed |
-| Turbo control identity, phase, cancellation and stale-reply guards | Implemented; needed for correct execution | Retain |
-| Input too large | Explicit exception; preserve state and report failure | Add configured rebuild/recovery |
-| Automatic question batching/splitting and context reduction | Deferred | Implement with meaning-preservation checks |
-| Turbo application-state/history helpers, semantic checkpoints and automatic maintenance | Deferred; authors can use native Pi/storage directly | Implement |
-| Related-evidence discovery, story grouping and retention recipes | Author-provided if needed | Optional reusable story-memory Module |
-
-Control state is the minimum bookkeeping needed to run safely; it is distinct from
-automatic management of the application's facts, memory or model context. The
-extended news walkthrough and research describe both releases; this table and the
-implementation plan determine release scope.
-
-Deferring automatic management does not withhold manual tools: authors retain
-`getBranch()`, `appendEntry()`, tool-result details, native context hooks and their
-own storage. Turbo's `prepareTurn()` accepts the input they choose. New wrappers
-and automatic upkeep are not prerequisites for V1.
-
-## Pi Durable guidance and the host contract
-
-Current target: a **Pi coding-agent extension**. Pi Durable is a separate
-experimental harness; its registry, tasks and documents are not interchangeable
-with coding-agent extension methods. Adopt its ownership/recovery principles
-without claiming its host guarantees. The full
-[applicability table](docs/research/pi-durable-applicability.md) records each topic,
-owner, release and reason.
-
-**Persisting execution state belongs in V1; automatically selecting or reducing
-model context remains V2.** V1 records task/attempt/branch/phase identity, stops
-owned helper work on cancellation, rejects stale returns, and preserves known
-effects. Authors own state schemas, receipts, deduplication and reconciliation.
-An interrupted external call has an unknown outcome until evidence resolves it;
-submission deduplication alone does not make that effect exactly-once.
-
-Native entries support restore bookkeeping, not an automatic promise to resume
-every interrupted task. If unattended crash continuation is required, evaluate the
-actual host before implementation; use host machinery rather than adding a durable
-scheduler to Turbo. Durable adoption would also require a new model/hook/context
-compatibility spike. No dependency or runtime migration has been made.
-
-## Goal and agreed ownership
-
-One installable Pi extension makes Jev the ongoing decision driver. An optional,
-user-enabled System 2 LLM handles scoped planning, generation, research, or tool
-work, then returns to Jev. The main goal remains with System 1.
-Generative LLM work in Turbo belongs to this explicit System 2 capability, rather
-than an implicit model call on every article or turn.
-
-The news/Telegram agent and ticket agent are **independent products** with separate
-integrations, sessions, state, tools, and policies. They reuse Turbo. Installing
-tools alone does not define either agent's decision space.
-
-| Color / owner | Responsibility |
-| --- | --- |
-| Blue — author | Goals, state schema, retention/retrieval, questions, criteria, action descriptions, bindings, reducers, completion and consultation policy. |
-| Purple — Turbo | V1: model/host Adapter, control phase, exception reporting, stale-result guards, cancellation, accounting and bounded helper transport. V2: application-state/history helpers and configured memory/context management. |
-| Green — Pi | Session tree, transcript, tool registry/execution, extension hooks/lifecycle, models and credentials. |
-| Amber — models | Jev answers authored typed questions; enabled System 2 performs its scoped subtask. |
-| Gray — operator/user | Enable System 2, select available models, grant tools/scope, set operational ceilings. |
+| Goals, state and selected context | Jev integration | Model catalog, credentials and request transforms through `Models` |
+| Questions, criteria and action mappings | Decision translation | Native generation and tool execution |
+| Product tools and their effects | Consultation and return | Conversations, task ownership and recovery |
+| Models, storage, permissions and scheduling | Enforcement of consultation limits | Documents, transactions, storage and task primitives |
 
 ```mermaid
 flowchart LR
-    A["AUTHOR • prepareTurn\nstate + questions + bindings"] --> T["TURBO • validate + invoke\nmechanics reused by any product"]
-    T --> J["JEV • typed judgment"]
-    J --> M["AUTHOR • resolve\nanswer → exact Pi call"]
-    M --> P["PI • execute tool\nregistry + installed hooks"]
-    P --> R["AUTHOR • reduce result\nfacts / errors / receipts"]
-    R --> A
-    classDef author fill:#e9f2ff,stroke:#96afd0,color:#17283e;
-    classDef turbo fill:#f1eaff,stroke:#b0a0cb,color:#302443;
-    classDef pi fill:#e8f5ec,stroke:#96bca2,color:#203a29;
-    classDef model fill:#fff3d6,stroke:#cbbb8d,color:#463711;
-    class A,M,R author;
-    class T turbo;
-    class P pi;
-    class J model;
+  A["AUTHOR\nstate + questions + bindings"] --> T["TURBO\nJev → authored decision"]
+  T --> D["DURABLE\nToolTask + continuation"]
+  D --> P["AUTHOR\nordinary tool + document writes"]
+  P --> A
+  T -->|consult| H["TURBO\nbounded System 2 child"]
+  H -->|native tool calls| D
+  H -->|findings + actual evidence| A
+  classDef author fill:#e9f2ff,stroke:#6797d0,color:#17283e;
+  classDef turbo fill:#f1eaff,stroke:#a289cb,color:#302443;
+  classDef durable fill:#e8f5ec,stroke:#73a584,color:#203a29;
+  class A,P author;
+  class T,H turbo;
+  class D durable;
 ```
 
-**Why Turbo exists:** Pi runs tools; Jev judges. Turbo's deep Module connects them
-and hides reusable lifecycle and handover mechanics behind a small Interface in
-V1. V2 adds configurable memory/context machinery. Authors retain product semantics
-without domain branches in the core. Pi already continues after tool results; retain that loop.
-[Pi execution model](https://pi.dev/docs/latest/how-pi-works).
+Turbo contains no product store, polling scheduler, workflow engine, automatic memory system or replacement tool executor. Removing Turbo leaves valid Durable tools, documents and tasks. Adding another product changes its recipe and application extension.
 
-## What Jev fundamentally does
+News relevance and ticket assignment are independent applications. A ticket application would supply its own categories, team IDs, assignment tool and state. It does not run inside the news watcher.
 
-Treat each evaluation as self-contained: send relevant evidence again and ask
-typed questions. The reviewed contract has no conversation-memory handle; this is
-an API inference, not a server retention guarantee. Jev returns choices, scores,
-or yes/no probabilities, not newly written alert text.
-[Contract evidence](docs/research/jev-state-and-limits.md#what-jev-receives-and-remembers).
+## Public interface
 
-One question can compare **several articles in the same state**. Questions in one
-call cannot read one another's answers. Dependent judgments need another call.
-Code performs exact ID joins and time checks; ambiguous relationships need tested
-Jev judgments or enabled System 2. Confidence does not establish source truth or
-retrieval completeness. [Model limitations](https://docs.typesafe.ai/model-jaggedness/jev-1.13).
-
-## State: author-managed in V1, automatic helpers in V2
-
-In V1, the author prepares the complete bounded input and updates application state
-from actual results. Authors may store it in files, a database or native Pi custom
-entries. Turbo does not choose what to retain, discover relationships or maintain
-a smaller projection automatically. The diagram shows authored data flow in V1;
-V2 can supply optional helpers for those operations.
-
-```mermaid
-flowchart TD
-    S["AUTHOR store • across tasks\narticles + sources + relationships + alert ledger"]
-    W["AUTHOR working state • task/session\ngoal + position snapshot + unresolved story refs"]
-    H["PI record • persisted branch history\nmessages + calls + results + custom entries"]
-    C["TURBO control state\ntask / branch / revision / phase / budgets"]
-    S -->|authored retrieval| V["AUTHOR projection • fresh per judgment\nrelated evidence + policy + available actions"]
-    W --> V
-    H -->|selected paired evidence| V
-    C -->|capabilities / limits| V
-    V --> J["JEV input • bounded\nno automatic access to omitted records"]
-    classDef author fill:#e9f2ff,stroke:#96afd0,color:#17283e;
-    classDef turbo fill:#f1eaff,stroke:#b0a0cb,color:#302443;
-    classDef pi fill:#e8f5ec,stroke:#96bca2,color:#203a29;
-    classDef model fill:#fff3d6,stroke:#cbbb8d,color:#463711;
-    class S,W,V author;
-    class C turbo;
-    class H pi;
-    class J model;
-```
-
-| State | Management |
-| --- | --- |
-| Domain evidence | Author-selected file/DB/service; immutable source versions, provenance, indexes and retention. Supports correlation across tasks/sessions. |
-| Author working state | V1: author-managed schema, storage, reducers and migrations. V2: optional Turbo persistence/maintenance helpers backed by Pi custom entries. |
-| Turbo control state | Separate namespace; integration/task/branch/revision, helper identity, phase and counters. |
-| Pi transcript | Native execution record in V1; reusable paired history views are V2. Failed/unknown outcomes remain explicit in both. |
-| Jev projection | Rebuilt for the next judgment. Includes evidence content/excerpts; IDs alone do not load records. |
-
-Pi's `appendEntry()` and branch access support persistence. Custom entries do not
-enter model context automatically. V1 Turbo reconstructs its control record on
-load/resume/branch navigation; the author reconstructs application state. V2 adds
-application-state helpers. [Session format](https://pi.dev/docs/latest/session-format).
-
-V2 proposed helpers: `state.get/set`, `history.recent/read/resetWindow`, and
-`context.measure`. These are **not exported implementations** or V1 requirements.
-Author code supplies meaning; any automatic reduction or semantic maintenance is
-explicitly configured V2 behavior.
-
-<details>
-<summary>Persistence, resets, concurrency and freshness</summary>
-
-V1 retains the control guards below. Application persistence, migrations, retention
-and freshness remain author responsibilities; V2 may provide configured helpers.
-
-- Pair each request and resolver with task/branch/revision. Stale replies may be
-  audited but must not execute against newer bindings or another task.
-- Apply events once using stable IDs. Serialize one active task's transitions.
-  The companion extension owns ingress and bounded queues; new RSS input cannot
-  replace a task underneath an in-flight decision/helper.
-- **Task history window ≠ domain evidence window.** Resetting the former retains
-  related articles, unresolved stories and delivery receipts at their chosen scope.
-- Author-owned migrations handle schema changes. Unsupported versions stop with
-  diagnostics rather than resetting to apparently empty, successful state.
-- Cached positions carry time/revision; the author defines refresh policy.
-  Preserve corrections, superseded claims and unresolved contradictions.
-- Cross-store writes are not automatically atomic. Use event IDs, recoverable
-  writes and idempotency where supported. Unknown send outcomes need reconciliation.
-  Pi branch navigation does not undo an external effect.
-- At storage/queue limits, apply explicit retention/backpressure. Preserve required
-  unresolved evidence or visibly stop ingestion. Expose expired/missing coverage.
-
-</details>
-
-## News: two weak signals can form one useful story
-
-Synthetic case; **expected policy behavior, not measured Jev output**:
-
-```mermaid
-flowchart LR
-    A["AUTHOR archive • A\nHelix Plant 7 stopped\nno held-company link yet → keep"]
-    B["AUTHOR archive • B\nAster relies on Plant 7\nno disruption by itself"]
-    A -->|retrieve together| C["JEV sees A + B + held Aster\npotential supply risk?\ncheck dates / corrections / uncertainty"]
-    B --> C
-    C --> D["PI • selected Telegram tool\nreceipt establishes delivery"]
-    classDef author fill:#e9f2ff,stroke:#96afd0,color:#17283e;
-    classDef model fill:#fff3d6,stroke:#cbbb8d,color:#463711;
-    classDef pi fill:#e8f5ec,stroke:#96bca2,color:#203a29;
-    class A,B author;
-    class C model;
-    class D pi;
-```
-
-**No alert yet is not forget.** On B, author retrieval searches the archive for the
-new supplier/plant link. Keep A+B, timestamps and source excerpts together.
-Per-article relevance filtering could lose A. Bounded retrieval can still miss
-links; expose omissions and evaluate recall. See the [news walkthrough](examples/news-agent/README.md).
-
-V1 can demonstrate this with an author-supplied A+B packet. Automatic discovery of
-the connection and maintenance of story memory belong to V2.
-
-## V2: optional story-memory Module
-
-Authors should not need to implement every storage/search/grouping operation from
-scratch. An optional Module can provide reusable machinery while the author defines
-what a useful connection means for their agent. The news recipe is one configuration
-of that Module; it does not add news-specific policy to Turbo's core.
+[`createTurbo`](src/extension.ts) accepts one versioned integration, a native classifier reference, ordinary tool references and optional System 2 configuration. It returns a native extension, local provider, model reference and consultation tool.
 
 ```ts
-// V2 proposal; pseudocode, not an exported Interface.
-storyMemory({
-  relatedWhen: "Same event, supplier dependency, or correction",
-  alertWhen: "Combined evidence materially affects a held position",
-  retention: "Author-configured horizon and pinned unresolved stories",
-  whenUnclear: "Offer consultation if user-enabled System 2 is available"
-})
+// Executable interface shape; product implementations are application code.
+const turbo = createTurbo({
+  integration: { id, revision, prepareTurn, resolveTurn },
+  classifier: { provider: "typesafe", modelId: "jev-latest" },
+  tools: [readPortfolio, readNews, sendAlert], // native defineTool() references
+  system2: { enabled: true, model: helperModel,
+    tools: ["readNews"], maxTurns: 6, maxToolCalls: 8, timeoutMs: 60_000 },
+});
+registry.install(productExtension);
+registry.install(turbo.extension);
+models.setProvider(turbo.provider);
+// Application opens Harness/storage and selects extensions/tools/model.
 ```
 
-```mermaid
-flowchart TD
-    A["V2 MEMORY • store source versions"] --> B["Find candidate connections\nsearch archive / existing story groups"]
-    B --> J["JEV • narrow relationship judgment\nauthor defines what related means"]
-    J --> G["Store sourced story links\nuncertainties + corrections retained"]
-    J -->|help selected and enabled| H["SYSTEM 2 • scoped investigation"]
-    H --> G
-    G --> P["Prepare bounded joint evidence\nnext authored judgment sees A+B"]
-    classDef memory fill:#f1eaff,stroke:#b0a0cb,color:#302443;
-    classDef model fill:#fff3d6,stroke:#cbbb8d,color:#463711;
-    class A,B,G,P memory;
-    class J,H model;
-```
+The tools array declares bindings Turbo may translate and wrap. It does not implement or independently register product tools. The application registers those tools through its Durable extension.
 
-The Module supplies candidate retrieval, typed relationship questions, source-linked
-groups, retention and context assembly. The author supplies relationship criteria,
-alert policy and storage choices; the operator grants models/tools/work ceilings.
-`whenUnclear` cannot enable a helper or bypass permissions.
-
-For A/B: retain the Helix outage without an immediate alert; when B introduces the
-Aster–Helix dependency, search for Helix, ask Jev whether the supplied sources
-connect, and retain A+B as a group. Context reduction keeps the connected evidence
-together. Corrections update claim status while preserving original sources/receipts.
-
-Search can miss candidates; a Jev judgment cannot recover evidence it never saw.
-Keep coverage/omissions visible, test retrieval recall and joint-evidence quality,
-and use configured System 2 for difficult connections when selected. No automatic
-claim of completeness or truth. This entire Module is **V2 work**.
-
-## Configuration and limits
-
-| Knob | Who chooses it? | At the limit |
+| Interface | Input → output | Required invariant |
 | --- | --- | --- |
-| Retention, retrieval horizon, story grouping | V1 author; V2 configured memory Module | Explicit policy; missing coverage stays visible. |
-| Fields/excerpts for each judgment | V1 author prepares fitting input; V2 may assist | V1 exception; V2 configured rebuild preserves decisive relationships. |
-| Optional encoded-request byte cap and size breakdown | V2 operator/author; Turbo enforces | Diagnostics and configured recovery. Bytes are not tokens. |
-| Actual Jev limits | Selected backend/model | V1 assumes compliance and handles exceptions; V2 adds measurement/management. |
-| Task/helper calls, deadlines, spend | Operator ceilings; author may narrow | Explicit exhausted/incomplete outcome; no automatic increase or helper ping-pong. |
-| Pi compaction | Native lifecycle integration | V1 explicit auxiliary handling/unsupported outcome; V2 configured checkpoint/summarization. Never selects domain actions. |
+| `prepareTurn(input, context)` | Native reads + messages + capabilities + latest consultation → `PreparedTurn` or final decision | Select the complete Jev-visible context; return plain JSON data. No application writes. |
+| Capabilities | Current native offered tool definitions → authored choices | Respect native enabled tools, model callers, model-tool selection and consultation availability. |
+| `PreparedTurn` | `{ request: { state, questions, ... }, bindings }` | Data only. No closures, tool instances or store objects. |
+| `resolveTurn(packet, answer)` | Saved packet + validated classifier answer → tool / consult / final | Pure deterministic mapping; exact IDs and arguments come from the saved packet. |
+| Tool decision | `{ kind: "tool", name, args }` | Ordinary enabled Durable tool; native validation and permissions still apply. |
+| Consult decision | Goal, inputs, completion criterion, exact argument grants or explicit unrestricted arguments | Operator must enable System 2 and include these tools. |
+| Final decision | Status + text | Status is recorded as `rawStopReason: "turbo.<status>"`. A settled native submission can still be blocked. |
 
-Current TypeSafe documentation for `jev-1.13.0` requires **both**:
+Bump `integration.revision` when state interpretation, questions, mappings or policy changes. Persisted work rejects an incompatible saved revision. Keep tool registrations/wrappers available until pending tasks settle; do not remove the Turbo extension from a live Turbo conversation. Native registry replacement is application authority, not a sandbox.
 
-```text
-state + all questions combined ≤ 64k tokens
-state + longest question      ≤ 32k tokens
-```
+## System 1: low-level path
 
-A 30k state + 3k question fails the second constraint even below the first.
-This is not a universal 64k conversational memory. Operators can leave backend
-ceilings to Turbo; evidence policy still needs an author.
-[Published limits](https://docs.typesafe.ai/models).
-
-No exact preflight tokenizer/count endpoint was found in the reviewed contract.
-V1 handles provider exceptions without claiming exact preflight admission. V2's
-measurement reports complete encoded bytes, labeled token estimates and overhead
-uncertainty. Both record available actual usage/resolved model identity.
-[Measurement gaps](docs/research/jev-state-and-limits.md#documented-limits-and-measurement).
-
-### V1: assume fitting input; handle the exception
+Call path from source; Durable dispatches each task asynchronously.
 
 ```text
-Author supplies prepared state + questions + resolver
-  → Turbo validates the decision protocol and invokes Jev
-  → success: resolve answer and continue through Pi
-  → recognized input overflow: explicit context_overflow failure
-  → unclassified provider error: preserve error classification/details
+Conversation.submit(input, requestId)                  DURABLE: admission/deduplication
+└─ GenerationTask.request
+   ├─ Turbo beforeRequest
+   │  ├─ memo: prepared packet + recipe revision       DURABLE task memo
+   │  ├─ api.models.classify(authored request)         native model access / Jev
+   │  ├─ memo: answer
+   │  ├─ author.resolveTurn(packet, answer)            AUTHOR: pure translation
+   │  └─ memo: decision + assistant message
+   ├─ local provider returns signed prepared message  TURBO: chat-shaped adapter
+   └─ native ToolTask                                 DURABLE: schemas/hooks/replay
+      ├─ Turbo wrapper checks saved call ID + args
+      └─ ordinary application tool executes
+         └─ next native generation → prepareTurn
 ```
 
-Preserve author state and pending work. Do not emit a domain action or success from
-a failed call. Do not retry the unchanged oversized request indefinitely, silently
-truncate, split questions, rebuild state, or invoke System 2 to repair overflow.
-The author/operator may explicitly correct the input and start a new attempt.
-`context_overflow` is a proposed Turbo error classification, not an invented HTTP
-status; only use it when the failure can be identified reliably. Handle failed
-classifier result statuses as well as thrown exceptions; skip the author resolver
-on either. Pi can compact/retry overflow, so the V1 integration must guard that
-path and terminate the unchanged attempt, not merely catch the classifier call.
-[Concrete failure design](docs/v1-implementation.md).
+The local models are `turbo-<id>/system1` and `turbo-<id>/system2`. A classifier cannot be selected directly as a native chat model. The adapter converts authored decisions into ordinary assistant/tool messages. It does not choose goals or run a tool loop.
 
-### V2: configured overflow recovery
+The request envelope is signed with a process-local key. Durable reports and skips failed hooks, so the provider must reject missing or altered preparation. Saved responses are re-signed after reopening; signatures are not persisted credentials. This protects the transport from transcript fabrication, not malicious installed code.
 
-```mermaid
-flowchart TD
-    B["AUTHOR • request + resolver"] --> M["TURBO • measure encoding\nstate + questions + adapter overhead"]
-    M -->|fits known guards| J["JEV • evaluate\nprovider remains authoritative"]
-    M -->|known over limit| R["AUTHOR • bounded rebuild\nremove duplicates / unrelated text\nkeep connected evidence + corrections"]
-    R -->|new request AND resolver| M
-    R -->|cannot preserve meaning| Q["Small recovery judgment, if viable\nretrieve / narrow task / consult / stop"]
-    Q -->|Jev selects enabled help| S["SYSTEM 2 • scoped work\nread chunks; return sourced result"]
-    Q -->|no viable recovery| X["Blocked: context_overflow\nevidence retained; never 'irrelevant'"]
-    J -->|confirmed input overflow| R
-    classDef author fill:#e9f2ff,stroke:#96afd0,color:#17283e;
-    classDef turbo fill:#f1eaff,stroke:#b0a0cb,color:#302443;
-    classDef model fill:#fff3d6,stroke:#cbbb8d,color:#463711;
-    class B,R author;
-    class M,X turbo;
-    class J,Q,S model;
-```
+The physical classifier identity and usage remain on its assistant response. Invalid answers, invalid JSON, provider errors and oversized inputs stop with a recorded diagnostic. Failed or cancelled inference cannot resolve an action. Turbo does not retry unchanged classifier input or silently ask System 2 to repair it.
 
-Bound rebuild/recovery attempts. A recovery question asks how to obtain adequate
-input, not whether omitted news is relevant. Preserve unknown provider error
-classification; do not invent an overflow error code. System 2 also has finite context.
+## State and context: V1 is author-managed
 
-V2 can split independent question batches when only the aggregate limit is exceeded;
-each batch must still fit state plus its longest question and preserve answer bindings.
-Splitting questions cannot fix a single oversized state/question pair. Reduction,
-chunking, recovery judgments and semantic memory management are also V2.
+Jev judges the supplied state and questions. Turbo does not give it hidden cross-call memory. Persistence stores facts; the author still chooses which facts enter each judgment.
 
-Pi compaction is separate from Jev projection. V1 must guard auxiliary requests and
-report unsupported Turbo compaction explicitly without changing other models' behavior.
-V2 adds configured checkpoints and any explicitly enabled System 2 summarizer.
-A small Jev payload does not bypass Pi's earlier compaction checks.
-[Compaction design](docs/research/pi-integration.md#compaction-and-auxiliary-requests).
+| State | Owner and storage | Recovery / context meaning |
+| --- | --- | --- |
+| Product data | Author `defineDoc` / `defineDocFamily`, native commits | Author selects scope, history, fork rules and migrations. Other application stores are also possible. |
+| Conversation history | Durable entries | Native transcript; author chooses what becomes Jev state. |
+| In-flight decision | Turbo data in native generation memos | Packet, answer and decision survive pending work. Memos disappear when the task becomes terminal. |
+| Helper scope/result | Turbo conversation document | Fixed deadline, grants, task IDs, evidence and result; not product memory. |
+| Jev input | Author's prepared packet | Selected evidence only; Turbo never summarizes or selects articles. |
 
-## Built-in, optional System 2
-
-Turbo supplies the reusable handover mechanism; the user enables/configures it.
-This is **V1 work** for authored reasoning/tool subtasks; automatic state/context
-maintenance and overflow-triggered recovery are V2.
-Within grants/budgets, Jev can choose consultation whenever the authored judgment
-calls for it. No core confidence cutoff or mandatory planning stage. The author
-binds Jev's selected intent to a brief; Jev does not generate that brief as free text.
-
-```mermaid
-flowchart LR
-    U["USER • enable / LLM / grant"] --> T["TURBO • enforce scope\nrecord parent + helper identity"]
-    J["JEV • select help"] --> A["AUTHOR • brief\ngoal / evidence / doneWhen"]
-    A --> T
-    T --> L["SYSTEM 2 • scoped subtask"]
-    L --> P["PI • allowed tools"]
-    P --> L
-    L --> R["TURBO + AUTHOR • validate return\nfindings / unknowns / actual effects"]
-    R --> N["JEV • resume main goal"]
-    classDef author fill:#e9f2ff,stroke:#96afd0,color:#17283e;
-    classDef turbo fill:#f1eaff,stroke:#b0a0cb,color:#302443;
-    classDef pi fill:#e8f5ec,stroke:#96bca2,color:#203a29;
-    classDef model fill:#fff3d6,stroke:#cbbb8d,color:#463711;
-    classDef user fill:#eeeeee,stroke:#aaaaaa,color:#303030;
-    class A author;
-    class T,R turbo;
-    class P pi;
-    class J,L,N model;
-    class U user;
-```
-
-Implemented split: operator grants maximum model/tools/work and time ceilings; author supplies the
-product brief and requested subset; Turbo enforces their intersection with Pi
-availability/hooks. The Hyperliquid companion grants source reads only. Other authors can request explicitly
-granted effects and must preserve their receipts and reconciliation policy.
-
-<details>
-<summary>Handover semantics — implemented Interface linked below</summary>
-
-```ts
-// AUTHOR: pseudocode, not exported APIs.
-prepareHelp(state, intent) => ({
-  goal, inputs, doneWhen, requestedTools, argumentScope, resultShape
-})
-applyHelp(state, result) => nextState
-
-// TURBO: control identity; PI persists tool execution.
-helper = { taskId, branchId, revision, callId, phase, budget }
-result = { status, findings, sourceRefs, uncertainties, effects, usage }
-```
-
-- One active helper per task initially, no recursive delegation. Retain the main
-  goal and define the subtask's return condition.
-- S2 can use several allowed tools through Pi. Validate tool/argument/resource
-  scope and installed hooks. Generated text does not grant permission.
-- Separate proposals from actual effect receipts; return any authorized effect
-  so Jev does not perform it twice. Validate structure/provenance mechanically;
-  semantic correctness still requires authored checks and model evaluation.
-- Success, incomplete, denied, exhausted and error return distinct evidence if
-  the parent remains active. A plain LLM final response is not proof of success;
-  missing structured handback needs an explicit recovery path.
-- Parent cancellation aborts work without restarting Jev. Late task/branch/revision
-  replies cannot apply. On resume, reconcile unknown external effects.
-- Cancellation must reach the underlying work, not just its waiter. Keep a pending
-  cancellation explicit until owned work terminates; retain any recorded effects.
-- Helper completion is not main completion. Jev judges the next action/outcome.
-  V2 summarization is separately configured within the enabled System 2 capability;
-  enabling consultation does not enable a silent summarizer. Unrelated Pi extensions
-  retain their own explicitly configured capabilities.
-
-</details>
-
-## Native Pi integration — implemented transport
-
-Tested with **Pi coding-agent 1.0.4**, using the host's public APIs. The virtual
-model routes to Turbo's chat-shaped Adapter; the Adapter invokes native
-`ctx.modelRegistry.classify()` and emits ordinary assistant/tool messages.
-Classifiers are not selected directly as chat models. Pi owns continuation.
-[Native facilities](docs/research/pi-integration.md#verified-facilities).
+A task memo is a recovery aid, not a permanent evaluation dataset. If an application needs frozen decision cases after completion, it must explicitly retain them in its own documents/entries.
 
 ```text
-/model turbo/auto — native virtual selection
-  → Turbo System 1 Provider → Pi classifier → Jev → authored resolve
-    → ordinary Pi tool → actual result → next authored judgment
-    → turbo_consult → isolated native Pi Agent → physical LLM
-         → forwarded ctx.executeTool → parent validation/hooks/effects
-         → turbo_finish or explicit incomplete/error → Jev resumes
-  direct / summary → explicit unsupported error; no business judgment
+NEWS EXAMPLE — synthetic meaning, not a measured Jev result
+A arrives → author sends [A, portfolio] → Jev chooses skip
+            application records skip and retains A
+B arrives → author sends [A + prior skip, B, portfolio]
+            Jev can choose alert / defer / scoped consultation
 ```
 
-**Transport decision:** the earlier same-session S2 phase router remains a design
-alternative, not the implementation. An isolated `pi-agent-core` Agent gives the
-helper an explicit brief and its own context/lifetime. It is neither a bespoke
-agent loop nor a separately durable `AgentSession`. Turbo forwards helper domain
-calls through the parent `ctx.executeTool`, records the helper transcript/results
-as custom entries, and propagates cancellation before awaiting idle. Tests observe
-those boundaries; they do not establish every possible third-party hook combination.
+The news recipe matches consultation to its article host-side, then sends Jev the helper goal/completion criterion, status, findings, sources, uncertainties and actual tool evidence. Original inputs, task IDs and model accounting stay in the native handback instead of duplicating the selected article window and portfolio. The `durable-2` recipe revision rejects pending packets prepared with the former representation.
 
-Factory registration uses `registerProvider`, `registerVirtualModel`, `registerTool`
-and versioned `pi.events` discovery. Both companion load orders work. Resources
-initialize on `session_start` and close on `session_shutdown`; reload rediscovers
-author functions. Helpers use Pi's configured physical models and credentials.
-[Extension contracts](https://pi.dev/docs/latest/extensions),
-[virtual models](https://pi.dev/docs/latest/virtual-models).
+The example retains 48 hours of articles and selects up to 24 preceding/current articles. It labels omitted articles and truncated excerpts. Related evidence outside that authored window is unavailable. Review and receipt ledgers grow until the application archives them deliberately.
 
-Helper tool access intersects operator grants, author argument scopes and native
-availability/hooks. Approved argument objects are frozen before subsequent hooks;
-hooks can deny calls but cannot rewrite those objects into another binding. This
-is a cooperating-extension contract, not isolation against malicious installed code.
+If the request exceeds a model limit, the call fails explicitly. The author changes selection and starts another check. Turbo declines native compaction in its conversations. Automatic retrieval, shrinking, summarization, story clustering and learning remain outside V1.
 
-Turbo records returned classifier identity/usage and helper model usage. Pi adds
-nested tool usage to the parent result; Turbo does not add it twice. Unknown provider
-pricing is not a claim of free execution. Dollar spend ceilings are not implemented;
-current limits are steps, helper turns/tool calls and elapsed time.
+## System 2: reusable consultation, native execution
 
-A restored unfinished control record becomes an interruption error, retaining its
-pending call. A new explicit attempt re-prepares author state. The Hyperliquid
-companion blocks on pending/unknown alerts in its independent file ledger. Native
-branch navigation never rolls back that external ledger.
+```text
+S1 consult decision, saved on its generation
+└─ native consultation ToolTask (replay: safe)
+   ├─ save original scope + absolute deadline in native memo
+   ├─ find/create conversation owned by this tool task
+   └─ child.submit(requestId = consult:<toolTaskId>)
+      └─ native GenerationTask loop
+         ├─ beforeRequest: check scope/turn ceiling
+         ├─ api.models.streamSimple(physical LLM, native messages)
+         ├─ memo response → signed local provider transport
+         └─ native ToolTask(s)
+            ├─ native schema, permissions and application wrappers
+            ├─ Turbo execute wrapper: grants/deadline/call budget
+            └─ ordinary product tool
+      └─ turbo_<id>_finish alone → structured HelpResult
+   └─ return native tool result/details to parent
+      └─ author prepares next Jev judgment
+```
 
-## Open decisions and proof required
+The helper receives its authored brief plus native system sections/tool definitions, not the parent's transcript. By default, it inherits the parent's extensions, including permission hooks. The operator can explicitly choose another extension set. Tool selection is narrowed to the requested, operator-approved ordinary tools and the finish tool.
 
-| Decision | Current position |
+| Limit or rule | Implemented behavior |
 | --- | --- |
-| Helper transport | Implemented native Agent inside a model-only consultation tool, forwarding domain calls through parent Pi hooks. |
-| Host and crash recovery | Coding-agent target; prove restore limits. Evaluate Durable before promising unattended continuation; this is separate from V2 context automation. |
-| Public Interface | Implemented in `src/contracts.ts`; local experimental package, not a versioned public release. |
-| State format | V1 control record + author-managed application state; V2 state helpers/checkpoints/migrations. |
-| S2 default grant | Disabled by default. News companion requests exact source reads only. |
-| Context management | V1 fitting-input assumption and explicit exceptions; V2 measured diagnostics, batching and configured recovery. |
-| Story-memory Interface | V2 optional Module with author-defined relationships/policy; exact configuration still draft. |
-| Model reliability | V1 supplied-evidence judgments/S2 need evaluation; V2 retrieval, grouping and compression need additional evaluation. |
+| Enabled/model/tool selection | Operator configuration, checked when used and after recovery. No default physical LLM. |
+| Exact arguments | Authored grant intersected with operator tool names; rechecked inside execution, including native replay and nested calls. |
+| `maxTurns` | Maximum committed helper model turns; checked before another physical request. Defaults to 6. |
+| `maxToolCalls` | Distinct admitted product ToolTasks; replay uses the same budget slot. Defaults to 8. Oversized batches are rejected before effects. |
+| `timeoutMs` | Absolute persisted wall-clock deadline, defaults to 60 seconds. Reopening does not reset it. |
+| Completion | Finish must be the only call in its batch. Plain text becomes `incomplete`; helper completion does not complete the parent. |
+| Return | Status, findings, source claims, uncertainties, original request, child ID, actual tool evidence and physical model usage. |
+| Cancellation | Native task ownership cancels child work. Tool code must cooperate with its Chord context. Closing the harness preserves unfinished work. |
+| Tool controls | Helpers cannot use tool-result handoff/addTools to expand scope or reset budgets. Ordinary non-helper tools retain native behavior. |
 
-For each change show the next judgment, field rationale, before/after meaning,
-execution evidence and missing model validation. Small input alone is not efficiency.
-Measure accuracy, model identity, whole-task latency/cost and usage.
+A provider call interrupted before its response is memoized may be repeated by recovery. `maxTurns` is not an exact billing cap across crashes. Replayed safe tools may repeat work; application idempotency remains essential. Deadline enforcement also depends on cooperative tool cancellation and a sensible host clock.
 
-Outcomes stay **completed / waiting_input / blocked / cancelled / error**; Pi idle
-proves none of them. Native tests exercise independent counter/helper integrations and the real news companion
-through the same core. The ticket product remains a separate design example.
-See [implementation gates](docs/implementation-plan.md).
+`findings`, `sources` and `completed` are model claims. Actual tool evidence is separate. The parent author decides what evidence matters, whether to change product state and what Jev should judge next.
+
+**Current adapter tradeoff:** physical helper inference occurs in `beforeRequest`; its completed response then goes through the local provider. Put Turbo last among generation hooks so preceding native message policies apply. Native tool hooks still run normally. `Models` credentials/transforms apply, but generation-specific stream options and live partial-token streaming are not forwarded to the physical helper. Deferred provider jobs are unsupported and return incomplete. Do not represent this as complete chat-provider feature parity.
+
+## Recovery and effects
+
+| Interruption point | What happens on reopening |
+| --- | --- |
+| Before packet/answer commit | Native task invokes the unfinished preparation/inference again. Author preparation must be repeatable. |
+| After decision memo | Reuse that decision; do not reclassify changed product state for the saved call. |
+| During safe tool | Durable replays the same ToolTask; Turbo rechecks binding, revision, current grant and deadline inside `execute`. |
+| During unsafe tool | Durable reports interrupted execution; Turbo does not resend the effect. |
+| During consultation | Find the same owned conversation and stable submission; keep its original deadline and limits. |
+| After external acceptance, before receipt commit | Effect is uncertain. The application reconciles it; SQLite cannot transact with Telegram. |
+
+Native safe replay can skip the original `beforeTool` chain. Replay-sensitive **application** permissions must also live in the tool or a native execution wrapper. Turbo enforces its own constraints there; it cannot retrofit every third-party permission hook.
+
+The news application uses `replay: "unsafe"` for alerts, commits a pending intent before HTTP, and retains unknown delivery until operator reconciliation. Confirmed receipts deduplicate exact effect keys. This is not exactly-once external delivery.
+
+The application opens `openNodeSqliteStorage` from `@earendil-works/pi-durable/storage/sqlite/node`. Bun 1.4.3 implements `node:sqlite`, so Durable owns the SQLite adapter, transaction queue, schema and migrations; Turbo maintains no storage adapter.
+
+Use one process per storage. A supervisor restarts the worker; Durable resumes committed tasks. The SQLite backend's default WAL/NORMAL settings do not establish power-loss guarantees. SIGKILL recovery tests cover process death only.
+
+## Native extension rules and retained defaults
+
+| Durable system | Turbo/application usage |
+| --- | --- |
+| `defineExtension`, registry | Application installs product and Turbo extensions; conversations select their names. |
+| `hook`, `wrapTool` | Public generation/compaction hooks and execution wrappers; no private runtime casts. |
+| `defineTool`, schemas, callers, replay | All product tools stay native. Consultation/finish are native model-callable tools. |
+| `Models` | Native TypeSafe classifier and configured physical helper provider. Credentials stay with the host. |
+| Documents, `commit`, `memo` | Native persistence only; product documents and consultation bookkeeping remain separate. |
+| Tasks and ownership | Native helper recovery/cancellation; application watch uses `defineTask`, `sleep` and checkpoints. |
+| Usage | Child model usage belongs to the child ledger; never copied into parent tool usage. Incomplete uncommitted requests may lack a final usage receipt. |
+| Compaction/retry/parallel execution | Native capabilities remain available to other conversations. Example explicitly disables compaction/retry and selects sequential tools. |
+
+Published 1.2.0 types/source govern implementation; older article snippets use `content` where current tools use `output`.
+
+## Verification and remaining scope
+
+Production paths run against the real Durable Harness, SQLite, native tasks, hooks and tool executor. Tests substitute inference and external HTTP, including the news A → A+B sequence. Separate-process SIGKILL tests exercise saved decisions, safe/unsafe tools and helper recovery. See [development](docs/development.md) for the full validation matrix.
+
+Live Jev relevance, live helper quality, real portfolio/feed access and Telegram delivery remain unverified. Automatic state management and learning from consultations remain outside this version.

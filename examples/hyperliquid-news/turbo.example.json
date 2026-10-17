@@ -1,7 +1,9 @@
 {
-  "integration": "hyperliquid-news",
-  "classifier": { "provider": "typesafe", "id": "jev-latest" },
-  "maxSteps": 32,
-  "timeoutMs": 120000,
-  "system2": { "enabled": false }
+  "classifier": {
+    "provider": "typesafe",
+    "modelId": "jev-latest"
+  },
+  "system2": {
+    "enabled": false
+  }
 }

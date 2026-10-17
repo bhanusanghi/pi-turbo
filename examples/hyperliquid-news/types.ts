@@ -3,7 +3,7 @@ export interface NewsConfig {
   feeds: string[];
   perpDexs: "all" | string[];
   includeSpot: boolean;
-  stateFile: string;
+  databaseFile: string;
   mode: "preview" | "telegram";
   telegramChatId?: string;
   contextArticles: number;

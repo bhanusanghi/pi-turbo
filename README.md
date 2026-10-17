@@ -1,71 +1,50 @@
 # pi-turbo
 
-**A working local Pi extension that makes authored Jev judgments drive native Pi tools.**
-Optional, operator-enabled System 2 handles scoped subtasks and returns evidence to Jev.
-State and context stay author-managed in V1; automatic management is V2.
+**System 1 decisions and optional System 2 consultation for Pi Durable applications.** Built against `@earendil-works/pi-durable` **1.2.0**, running on **Bun 1.4.3**.
 
-Start with the **[Hyperliquid portfolio + news watcher](examples/hyperliquid-news/README.md)**
-and its **[interactive visual guide](docs/visuals/hyperliquid-news.html)**.
+Your tools and application state remain ordinary Durable code. Turbo connects authored state/questions to Jev, translates the answer into a native tool call, and provides bounded consultation that returns to System 1.
 
-```text
-AUTHOR: state + typed questions → TURBO: native Jev call
-  → AUTHOR: answer-to-tool binding → PI: execute + hooks + result → repeat
-                       ↘ optional native Pi helper Agent → findings → Jev
-```
-
-## Run locally
-
-Node ≥22.19; tested with Pi **1.0.4**. This package remains private and unpublished.
-
-```sh
-npm ci --ignore-scripts
-npm run build
-npm test
-```
-
-Follow the watcher guide to configure your public wallet, RSS feeds and TypeSafe
-credentials. It starts in preview mode. No account, token or Telegram destination
-is embedded, and installing Turbo starts no polling or external action.
-
-## Author a companion
-
-Register domain tools with Pi and your decision contract with Turbo:
+| Your application | Turbo | Pi Durable |
+| --- | --- | --- |
+| Goals, documents, context, questions, mappings | Jev integration and decision translation | Models and native tool execution |
+| Product tools, permissions, model/storage selection | Optional consultation and its limits | Conversations, ownership, recovery and storage primitives |
 
 ```ts
-import { registerSystem1 } from "pi-turbo";
-
-export default function (pi) {
-  pi.registerTool(myDomainTool); // native Pi schema + execute()
-  registerSystem1(pi, {
-    id: "my-agent", revision: "1", tools: [myDomainTool.name],
-    prepareTurn(ctx) {
-      const state = readMyState(ctx.pi.sessionManager.getBranch());
-      return { request: { state, questions: myQuestions },
-        resolve: answers => bindMyDecision(state, answers) };
-    }
-  });
-}
+// Bootstrap excerpt. integration and productTools are authored application code.
+const turbo = createTurbo({
+  integration,
+  classifier: { provider: "typesafe", modelId: "jev-latest" },
+  tools: productTools, // ordinary defineTool() references
+});
+registry.install(productExtension);
+registry.install(turbo.extension);
+models.setProvider(turbo.provider);
+const root = await harness.root(context, { agent: {
+  model: turbo.model,
+  extensions: [productExtension, turbo.extension],
+  tools: [...productTools, turbo.consultTool],
+} });
+await (await root.submit({ type: "input", content: "Check", requestId: "job-42" }, context)).wait(context);
 ```
 
-The small example above is pseudocode around author functions. The
-[news companion](examples/hyperliquid-news/index.ts) is executable TypeScript.
-`resolve` returns a tool binding, a consultation request, or an explicit final
-outcome. Turbo supplies no news, relevance, position or team-routing policy.
+The application creates `models`, `registry`, storage and `harness` using Durable. See the [complete runnable bootstrap](examples/hyperliquid-news/run.ts).
 
-## Implementation and evidence
+Bun is the runtime, package manager and test runner. Both packages pin it in `.bun-version`; use their checked-in `bun.lock` files. The SQLite host uses Durable's stock `storage/sqlite/node` adapter through Bun's `node:sqlite` compatibility. Bun 1.4.3 is required; 1.3.14 does not implement that module.
 
-- [Architecture and ownership](ARCHITECTURE.md)
-- [Implemented V1 Interface, Pi hooks and lifecycle](docs/v1-implementation.md)
-- [Development and verification boundaries](docs/development.md)
-- [Implementation plan and remaining validation](docs/implementation-plan.md)
-- [Pi Durable applicability table](docs/research/pi-durable-applicability.md)
-- [Independent ticket-triage design](examples/ticket-triage/README.md)
-- [Extended news/V2 design](examples/news-agent/README.md)
+```sh
+bun install --frozen-lockfile --ignore-scripts
+bun run check
+bun run test
+```
 
-Tests use actual Pi sessions, registration, tool hooks, continuation and author
-storage. Inference and external HTTP are substituted; live model quality and
-Telegram delivery are not verified. Pi loads the declared TypeScript extension;
-compiled exports provide the companion Interface. Host packages are peers per the
-[Pi package guide](https://pi.dev/docs/latest/packages).
+Start with the [Hyperliquid portfolio + news guide](examples/hyperliquid-news/README.md). It defaults to preview and includes an application-owned durable watch task.
 
-Publishing is separate: [release guidance](docs/releasing.md). MIT: [LICENSE](LICENSE).
+The separate [portfolio-monitor foundation](examples/portfolio-monitor/README.md) supplies HTTP APIs, common ingress, Hyperliquid SDK portfolios, PostgreSQL, Redis queues and Telegram/preview delivery. Its evaluation queue intentionally waits for the next authored Jev/Turbo design. It has its own package, setup and tests.
+
+[Architecture / HLD and LLD](ARCHITECTURE.md) · [before and after migration](docs/durable-migration.md) · [public types](src/contracts.ts) · [verification](docs/development.md) · [implementation status](docs/implementation-plan.md).
+
+This migration replaces the coding-agent host integration. `pi -e`, `/pi-turbo`, companion registration, old session files and `stateFile` configuration do not apply. Existing data is not automatically imported; preserve and reconcile old delivery ledgers before enabling sends in a new database.
+
+V1 context remains author-managed. Turbo reports overflow; it does not summarize or silently enable an LLM. System 2 is opt-in. Durable resumes pending tasks; applications retain responsibility for safe replay and uncertain external effects.
+
+The package remains local/private. Tests cover native execution and process recovery with substituted inference/network calls; live model quality and external delivery are unverified.

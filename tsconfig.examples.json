@@ -2,5 +2,5 @@
   "extends": "./tsconfig.json",
   "compilerOptions": { "rootDir": "examples", "outDir": "dist-examples", "declaration": false },
   "include": ["examples/**/*.ts"],
-  "exclude": ["node_modules", "dist", "dist-examples"]
+  "exclude": ["node_modules", "dist", "dist-examples", "examples/portfolio-monitor"]
 }

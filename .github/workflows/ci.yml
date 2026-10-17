@@ -9,13 +9,34 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: monitor
+          POSTGRES_PASSWORD: monitor-test
+          POSTGRES_DB: portfolio_monitor
+        ports: ["5432:5432"]
+        options: --health-cmd="pg_isready -U monitor -d portfolio_monitor" --health-interval=5s --health-timeout=5s --health-retries=10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: --health-cmd="redis-cli ping" --health-interval=5s --health-timeout=5s --health-retries=10
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: "24"
-          cache: npm
-      - run: npm ci --ignore-scripts
-      - run: npm run check
-      - run: npm test
-      - run: npm pack --dry-run
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - run: bun run check
+      - run: bun run test
+      - run: bun pm pack --dry-run
+      - run: bun install --frozen-lockfile --ignore-scripts
+        working-directory: examples/portfolio-monitor
+      - run: bun run check && bun run build && bun test
+        working-directory: examples/portfolio-monitor
+      - run: bun run test:integration
+        working-directory: examples/portfolio-monitor
+        env:
+          TEST_DATABASE_URL: postgresql://monitor:monitor-test@127.0.0.1:5432/portfolio_monitor
+          TEST_REDIS_URL: redis://127.0.0.1:6379

@@ -1,77 +1,89 @@
 # Development
 
-Turbo V1 and the Hyperliquid/news companion are implemented. Read the
-[architecture](../ARCHITECTURE.md) before changing model inputs, action bindings,
-control state or helper availability. [Public Interface](../src/contracts.ts) ·
-[implementation](v1-implementation.md) · [remaining work](implementation-plan.md).
+Read [architecture](../ARCHITECTURE.md) before changing decisions, state selection, tool bindings or helper policy. The runtime targets **Durable, pi-ai and Chord 1.2.0**, pinned together in package metadata and the lockfile.
 
 ## Local checks
 
 ```sh
-npm ci --ignore-scripts
-npm run check
-npm test
-npm pack --dry-run
+bun install --frozen-lockfile --ignore-scripts
+bun run check
+bun run test
+bun pm pack --dry-run
 ```
 
-`npm test` builds the package and examples, then runs native Pi integration,
-HTTP-adapter and package-discovery tests. Tests use isolated temporary credential,
-settings and session locations; they do not use a real wallet or Telegram account.
-If your default npm cache is unwritable, use a writable `--cache` path; do not change
-system ownership to run these checks.
+`bun run test` cleans/builds the package and examples, then exercises production paths. SQLite databases and package extraction use temporary directories. The application uses Durable's stock SQLite adapter through Bun 1.4.3's `node:sqlite` compatibility. Native Harness and process-kill tests exercise its production recovery path. Inference and external HTTP are substituted; tests do not read a real wallet or send Telegram messages.
 
-Run the [watcher guide](../examples/hyperliquid-news/README.md) with the project's
-`node_modules/.bin/pi`. Development is pinned to Pi **1.0.4**. The broad peer ranges
-follow Pi packaging rules; they do not assert older or future API compatibility.
+`bun run news --help` runs the TypeScript example directly and shows its commands. [Setup guide](../examples/hyperliquid-news/README.md).
 
-## Verification: 2026-10-07
+Install/select the version in `.bun-version` before these commands; an older globally installed Bun is not upgraded by dependency installation.
 
-**32 tests passed**, including source/archive discovery. The interactive guide was
-checked in the browser, including A+B/overflow/unknown-delivery/help controls and a
-narrow viewport without page overflow. These visual checks do not run the agent.
+Bun runs the TypeScript compiler for type checks/declaration builds. `bun test` is the native test runner; `bun run test` builds exports first. Compatible `node:` standard-library imports run inside Bun. Neither package requires a Node executable or `tsx`. CI runs both packages and isolated PostgreSQL/Redis integration scenarios.
 
-| Evidence | Result / limit |
+## Verification matrix
+
+Verified 2026-10-15 on Bun 1.4.3: `bun run check` and all **56 tests passed**. Both TypeScript builds passed. These tests are native execution evidence, not live semantic model evaluation.
+
+| Area | Evidence |
 | --- | --- |
-| TypeScript package + runnable companion | Checked and compiled against installed Pi 1.0.4. |
-| Native integration | Real loader, ModelRuntime, AgentSession, classifier Adapter, tool hooks and continuation. Inference is substituted at its boundary. |
-| Registration | Both load orders, duplicate IDs, missing configuration and reload. |
-| State/lifecycle | Active-branch reconstruction, actual interrupted helper snapshot, cancellation, late model reply rejection; no pending-call replay. |
-| Context exceptions | Rejected classifier input never reaches resolve/effect or unchanged reclassification; manual compaction and direct auxiliary calls are blocked. |
-| System 2 | Isolated brief, multi-tool Agent loop, exact argument grants, host denial, return, error/exhaustion/cancel, mixed completion/effect rejection. |
-| Usage | Helper model usage plus nested tool usage counted once by the parent Pi record. |
-| News author path | A skipped but retained, A+B passed to next judgment, preview, receipt/deduplication, stale positions and unknown-send reconciliation. |
-| HTTP adapters | Native/HIP-3 perp and spot response shapes, RSS/Atom parsing, corrections, API errors, Telegram receipt and token-safe errors; fetch is substituted. |
-| Packaging | Source package + companion and unpacked npm archive load through native discovery. Declared exports are present; secrets/session/config files excluded. |
-| Headless CLI | Real project binary reaches the author's missing-wallet final outcome with no model credentials or external calls. |
+| Native integration | Real Harness, SQLite, registry, generation, tool tasks, document commits and continuation. |
+| Decisions | Packet/answer/result persistence; exact binding and revision checks; malformed arguments/context and provider failure stop before effects. |
+| Ownership | Concurrent conversations stay isolated; ordinary non-Turbo conversations keep native model/tools. |
+| Consultation | Native owned child, real system sections/tool schemas, multi-turn tool loop, structured return and actual evidence. |
+| Permissions/limits | Native host denial; later argument rewrite denial; exact grants, nested-call budget, turn/tool ceilings, deadline and cancellation. |
+| Failure evidence | Streamed native output/details and native result-validation errors remain visible in handback. |
+| Usage | Physical model identity, including resolved aliases; child usage counted once by the native ledger. |
+| Process recovery | Separate worker is SIGKILLed; reopen reuses saved decisions, safe tool task and consultation child. Unsafe effects do not replay. |
+| Changed policy | Reopened recipe revision and helper grants rechecked before execution; absolute deadline survives close/reopen. |
+| Context | Invalid/oversized classification stops without fallback; manual compaction leaves Turbo transcript unchanged and calls no LLM. |
+| News | A retained after skip; A+B reaches the next judgment; consultation applies only to its article; receipts/deduplication, preview and stale positions. |
+| News recovery | Pending intent survives acceptance/close without another send; operator reconciliation; native watch saves next due time and cancels through native tasks. |
+| HTTP adapters | Hyperliquid native/HIP-3/spot shapes; partial failures; RSS/Atom corrections; Telegram receipts and redacted transport errors. |
+| Package/CLI | Packed native extension runs inside Harness; obsolete build output/media/secrets excluded; example status opens SQLite without inference/HTTP. |
 
-**Not verified:** live Jev relevance/correlation accuracy, a live System 2 provider,
-actual Hyperliquid account reads, RSS availability, Telegram delivery, every
-third-party extension combination, power-loss persistence or automatic crash resume.
-No runtime code depends on the empty V2 `src/context/` implementation homes.
+Not verified: live Jev quality, live helper quality, real feeds/accounts/Telegram, all third-party hooks, power-loss recovery, distributed/multiple-writer storage or a deployed process supervisor.
 
-## System 1 input review
+## Portfolio monitor foundation
 
-Next judgment: “How should this article be handled, and which held exposure is
-most directly affected?” Current article, prior articles, timestamps, source URLs,
-previous judgments, explicit policy, portfolio coverage and optional helper evidence
-support that judgment. The focus question does not read the action answer.
+The independent package at [`examples/portfolio-monitor`](../examples/portfolio-monitor/README.md) has its own dependencies, build and tests. The root example build excludes it. Verified 2026-10-15 on Bun 1.4.3: strict TypeScript check/build, 45 unit tests and four integration scenarios passed; the root suite passes all 56 tests. The four scenarios preserve the original integration assertions, including ordered database and application steps.
 
-Before the news companion, the repository had only a design sketch and no model
-payload. Now the real preparation path sends A alone, records `skip`, then sends
-A+B with A's prior judgment. A test inspects those exact requests and the persisted
-receipt. The model answers in that test are supplied inference doubles, so this
-proves state/meaning and control transport, not Jev's semantic success. The authored
-window omits older articles explicitly; it is not evidence of improved efficiency.
+Foundation integration uses real PostgreSQL and Redis with isolated temporary schemas/databases/queue prefixes. It exercises authenticated HTTP admission, corrections, atomic refresh requests, normalized snapshots, paused evaluation, preview/Telegram receipt paths, delayed confirmed rate-limit retry, native Durable tool validation/scopes, compiled server startup/shutdown and concurrent membership/refresh locking. Hyperliquid SDK and Telegram network transports are substituted. The 2026-10-15 run did not include source connectors. No real model, live account or external notification was used. Test fixtures were removed from the local development database.
+
+The source application is split into a provider-neutral core and independently tested inbound registrations. See [shared-core.md](shared-core.md) for the current validation matrix and the two dependent PRs. SDK/session dependencies and wire fixtures belong to each registration PR; core lifecycle and storage tests use synthetic source clients. Live provider access remains unverified.
+
+Shared recovery covers interrupted reads, pending publications, retry deadlines, uncertain sends and operator reconciliation. It requires one application owner per database/queue namespace. Unknown sends are never automatically replayed.
+
+## System 1 meaning and evidence
+
+The news judgment still asks: **How should this article be handled, and which held exposure is most affected?** The author supplies policy, portfolio/coverage, current/prior articles, dates, source IDs, previous dispositions, omissions and relevant helper evidence.
+
+Before migration, preparation closed over in-memory bindings and read an application JSON file. Now preparation reads ordinary Durable documents and returns a serializable packet. A pure resolver maps the same judgments to exact tool arguments. The tests inspect actual A and A+B requests and saved receipts. Substituted answers prove transport/state semantics, not correct financial relevance. A window limit alone is not an efficiency result.
+
+## Review fixes and System 1 evidence
+
+The next news judgment remains alert, skip, defer or scoped consultation, with a supported position binding. Native offered tool definitions now determine capabilities; the authored news recipe blocks unavailable prerequisite reads and removes unavailable action criteria. Saved decisions still pass through answer validation, pure resolution and native dispatch. Helper results return to System 1.
+
+| Input | Decision use and disposition |
+| --- | --- |
+| Policy, dates, portfolio/coverage, selected articles and prior judgments | Keep: material relevance, direction, freshness, uncertainty and progress. |
+| Action/focus criteria and helper availability | Keep current native choices: selecting an action/help that can actually run. |
+| Helper goal, completion criterion, status, findings, sources and uncertainties | Keep when bound to the current article: assess what was investigated and what remains unknown. |
+| Tool names/arguments, native output/errors and original details | Keep actual evidence and source identity distinct from helper claims. Explicit structured `null` survives nested execution and handback. |
+| Repeated original inputs, call/task IDs, model/turn/usage accounting | Remove from the news Jev view; retain the full original native handback for diagnostics and provenance. |
+
+Before/after production-builder capture on the same synthetic 24-article, 1,000-character-excerpt scenario: the pre-consultation request stays **32,410 bytes**; the post-consultation request changes **66,480 → 34,900 bytes** (47.5% fewer UTF-8 bytes). The helper reads one source and returns findings plus uncertainty. This measures the actual author projection with classifier/HTTP doubles, not live token usage or semantic improvement. Existing current-article/context duplication predates this fix and was not changed.
+
+Regression checks exercise native tools/model-tool filters and model-only callers, disabled news reads/actions, full-host versus projected handbacks, and successful nested `Type.Null()` results. All three review defects are mechanically resolved. Live Jev/helper decisions, independent labels, latency/cost and external delivery remain unverified; no unqualified model-quality approval follows.
 
 ## Native contracts to preserve
 
-Register providers/models/tools in the factory; initialize session resources on
-session start and close them on shutdown. Do not use private Pi APIs. Retain native
-validation, installed hooks, cancellation, physical model identity and usage.
-Author state and effects remain author-owned. Tests must cross production paths;
-never add hardcoded-success substitutes for missing tools or model capability.
+- Register ordinary product tools separately from Turbo. Select extensions/tools/models through native conversation configuration.
+- Keep `prepareTurn` repeatable and `resolveTurn` pure. Product writes/effects belong in native tools. Bump recipe revisions when meaning changes.
+- Keep replay-sensitive permissions in execution/wrappers. Native safe recovery can skip initial `beforeTool` hooks.
+- Use task ownership for helpers and native cancellation contexts for work. `close()` preserves tasks; `abort()` cancels the applicable scope.
+- Do not remove/change in-flight tool definitions or wrappers without a coordinated application migration. Names are persisted; executable code is supplied on reopening.
+- Put Turbo last among generation hooks. Its helper inference occurs there, before the local provider returns the prepared response.
+- Native memos are first-write-wins and removed at terminal task completion. They are not permanent case archives.
+- Distinguish submission completion from author status; inspect `rawStopReason: "turbo.completed"` before reporting product success.
+- External effects require application receipts/reconciliation. Native request deduplication does not deduplicate arbitrary HTTP effects.
 
-The [Pi Durable comparison](research/pi-durable-applicability.md) guides ownership,
-unknown effects and cancellation. Durable's registry, scheduler and storage are
-not present in this coding-agent extension. The earlier design is retained as
-research, with its superseded transport clearly marked.
+The helper adapter currently omits physical partial-token streaming, deferred provider jobs and generation-specific physical stream options. Provider credentials/transforms still come from native `Models`. See [architecture tradeoffs](../ARCHITECTURE.md).

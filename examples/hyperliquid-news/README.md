@@ -1,172 +1,82 @@
-# Build a Hyperliquid portfolio + news watcher
+# Hyperliquid portfolio + news application
 
-**Runnable V1 companion for Pi 1.0.4.** You configure this agent; Turbo stays generic.
-[Interactive walkthrough](../../docs/visuals/hyperliquid-news.html) ·
-[Extension implementation](index.ts) · [Public Turbo Interface](../../src/contracts.ts).
+Runnable example on **Pi Durable 1.2.0**. The application owns tools, documents, prompts, source selection, delivery and scheduling. Turbo contributes Jev decisions and optional consultation.
 
-## 1. Run in preview mode
-
-From the `pi_turbo` checkout, with Node ≥22.19:
+## Start with preview
 
 ```sh
-npm ci --ignore-scripts
-npm run build
+bun install --frozen-lockfile --ignore-scripts
+bun run build
+bun run build:examples
 cp examples/hyperliquid-news/news.example.json news.local.json
 cp examples/hyperliquid-news/turbo.example.json turbo.local.json
 ```
 
-Edit `news.local.json`: put **your public account/subaccount addresses** in `wallets`
-and your chosen public HTTPS RSS/Atom URLs in `feeds`. Empty values deliberately
-stop with a configuration message. You can instead set `HYPERLIQUID_WALLET` for one
-account. Only the listed accounts are covered; subaccounts are not discovered.
-
-Make `TYPESAFE_API_KEY` available through your environment or configure TypeSafe
-in Pi's credential store. Turbo uses Pi's native classifier and credential lookup.
-The selected Jev alias is recorded with the provider's returned model identity.
-[Pi classifier support](https://pi.dev/docs/latest/models#use-classifier-models).
+Set your public account/subaccount addresses in `wallets` and public HTTPS RSS/Atom URLs in `feeds`. Empty values fail explicitly. Supply `TYPESAFE_API_KEY` through the environment. No signing or trading key is required.
 
 ```sh
-./node_modules/.bin/pi --no-extensions --no-builtin-tools \
-  -e . -e ./examples/hyperliquid-news/index.ts \
-  --model turbo/auto --turbo-agent hyperliquid-news \
-  --news-config news.local.json --turbo-config turbo.local.json
+bun run news check
+bun run news status
 ```
 
-In Pi, run `/news-check`. Inspect the `news_alert` tool result or
-`.pi/hyperliquid-news.json`: previews contain the actual message text and
-`status: "preview"`; **no Telegram call is made**. Use the project binary:
-the globally installed Pi may be older than the tested 1.0.4 API.
+`check` creates a fresh native conversation. `status` reads the saved ledger and pending task graph without scheduling work. Preview messages appear in the SQLite application ledger as `preview`; no Telegram call occurs.
 
-<details>
-<summary>What each configuration owns</summary>
+Use `--news PATH --turbo PATH` to select configuration files. `databaseFile` is the application's Durable SQLite path. One process owns that database: stop the worker before running another command against it. Attach a UI/server to the owning process if concurrent access is needed.
 
-| File / setting | Owner | Meaning |
+## What lives where
+
+| File | Owner | Responsibility |
 | --- | --- | --- |
-| `news.local.json` | Agent author / operator | Accounts, feeds, policy, state path, explicit evidence window and destination. |
-| `turbo.local.json` | Operator | Classifier, optional helper, work/time ceilings. |
-| `index.ts` | Agent author | Questions, state preparation, exact action mappings, alert template. |
-| `adapters.ts` | Agent author | Read-only Hyperliquid `/info`, RSS, source reads and Telegram delivery. |
-| `state.ts` | Agent author | File schema, lock, atomic replacement, exposure revision and delivery ledger. |
-| `src/` | Turbo | Reusable Jev-to-Pi bridge and scoped helper mechanics. No Hyperliquid/news rules. |
-
-`perpDexs: "all"` discovers HIP-3 DEXs plus native perps. To narrow coverage, supply
-an explicit array; native is `""`. `includeSpot` adds nonzero spot balances.
-Positions preserve decimal strings, direction and source coverage. This is an
-**exposure inventory**, not a consolidated NAV calculation: spot valuation, open
-orders, vault look-through and account discovery are outside this companion.
-[Perpetual endpoints](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals),
-[spot balances](https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot).
-
-</details>
-
-## 2. Understand one check
-
-🔵 Author · 🟣 Turbo · 🟢 Pi · 🟠 Models
-
-```mermaid
-flowchart LR
-    A["AUTHOR\nportfolio + retained news"] --> B["AUTHOR\nprepareTurn: state + questions"]
-    B --> C["TURBO → JEV\ntyped action + position choice"]
-    C --> D["AUTHOR\nresolve: exact tool arguments"]
-    D --> E["PI\nvalidate + hooks + execute"]
-    E --> F["AUTHOR\nrecord outcome / receipt"]
-    F --> B
-    classDef author fill:#e9f2ff,stroke:#6797d0,color:#17283e;
-    classDef turbo fill:#f1eaff,stroke:#a289cb,color:#302443;
-    classDef pi fill:#e8f5ec,stroke:#73a584,color:#203a29;
-    class A,B,D,F author;
-    class C turbo;
-    class E pi;
-```
-
-Small pseudocode; the linked files contain the executable TypeScript:
-
-```ts
-// AUTHOR — index.ts
-prepareTurn(ctx) {
-  cycle = readFromPiBranch(ctx.attemptId)
-  state = readAuthorFile()
-  evidence = previousArticles(23) + currentArticle
-  return { request: { state: { portfolio, evidence }, questions }, resolve }
-}
-resolve(answers) {
-  // IDs and arguments come from this exact snapshot, not model-written JSON.
-  return tool("news_alert", { cycleId, articleId, position: chosenIndex })
-}
-// AUTHOR tool, executed by PI
-news_alert(binding) {
-  recheckPositions()
-  saveDeliveryIntent()
-  receipt = sendTelegram(template(binding))
-  saveActualReceipt(receipt)
-}
-```
-
-The current article and focus are **independent questions** over the same evidence.
-They cannot read each other's answers. An alert without a supported position stops
-explicitly. Jev doesn't write notification prose; this companion uses a source-link
-template. It alerts on one most affected position per article version.
-
-## 3. A alone versus A+B
-
-Synthetic scenario, not measured Jev output:
+| [`run.ts`](run.ts) | Application host | Native providers, credentials, registry, SQLite, settings, worker commands and shutdown. |
+| [`index.ts`](index.ts) | Application | Ordinary `defineTool` implementations; Jev questions and pure action mapping. |
+| [`state.ts`](state.ts) | Application | `News` session document family and `Cycle` conversation document. |
+| [`watch.ts`](watch.ts) | Application | Native `defineTask`, saved sleep/check phase, absolute check deadline, cancellation. |
+| [`adapters.ts`](adapters.ts) | Application | Read-only Hyperliquid `/info`, RSS/Atom, source reads and Telegram HTTP. |
+| [`src/`](../../src/) | Turbo | Jev translation and bounded System 2; no portfolio, news or Telegram rules. |
 
 ```text
-A: “Orion operator is down”       B: “Held network depends on Orion”
-   ↓ author's skip judgment         ↓ next judgment sees A + B + positions
-retain A in the author file       alert / defer / read more with System 2
+Durable GenerationTask
+  → author prepareTurn reads native documents
+  → Turbo calls native Models.classify(Jev)
+  → author resolveTurn binds exact article/position IDs
+  → Durable ToolTask executes the ordinary product tool
+  → application commits documents / actual receipt
+  → native continuation asks Jev again
 ```
 
-| State layer | Stored where | What happens next |
+The application first fetches positions and feeds. It then asks how to handle each unreviewed article and which held position is most affected. An alert without a supported position stops. Jev selects supplied choices; the application writes the notification template.
+
+## A alone, then A+B
+
+Synthetic scenario; tests substitute the judgments.
+
+```text
+A: operator outage       → Jev input [A + portfolio]     → skip, retain A
+B: held asset depends on operator
+                         → Jev input [A + B + portfolio] → alert / defer / help
+```
+
+| State | Native location | Meaning |
 | --- | --- | --- |
-| Articles, review keys, alert receipts | Author's `stateFile` | Survive checks, Pi sessions and branch changes. |
-| This check's portfolio and progress | Pi custom entry `hyperliquid-news/cycle-v1` | Rebuilt from the selected branch; a new attempt fetches fresh evidence. |
-| Attempt, phase, pending call, counters | Turbo's Pi custom entries | Interrupted work becomes explicit error; no automatic replay. |
-| Jev's next input | Author's `prepareTurn` | Current article + up to 23 earlier articles + portfolio + optional findings. |
+| Articles, reviews and delivery ledger | Session-scoped `News`, keyed by accounts/feeds/destination | Shared across check conversations; does not rewind with a fork. |
+| Fresh portfolio, revision, read progress, issue | Conversation-scoped `Cycle` | Fresh per check; fork initializes empty. |
+| Selected state/questions/bindings | Pending native generation memo | Exact decision-time packet; removed when that task finishes. |
+| Watch phase/next due/check deadline | Native task checkpoint | Reopening resumes the current phase without resetting its timer. |
 
-**Skip means reviewed, not forgotten.** The author retains articles for 48 hours
-and selects a chronological window of 24 articles, by default. Omitted counts and
-truncated excerpts are explicit. This is a simple authored policy, not semantic
-story retrieval: related evidence outside that window will not reach Jev. Change
-`contextArticles`, `retentionHours`, `excerptChars` or the selection function yourself.
-Review/receipt records are retained; archive/migrate those deliberately as the file grows.
+Defaults retain 48 hours of articles and select up to 24 preceding/current articles. Excerpt limits and omitted counts are explicit. Skipping reviews an article; it does not delete it. Change this application policy to use other evidence windows. Review and receipt records need application-owned archival as they grow.
 
-**If the resulting input exceeds the model limit:** Turbo records the error, skips
-resolution and stops that attempt. It does not shrink, summarize, split or silently
-invoke an LLM. Adjust the author input and explicitly run another check. Likewise,
-when Pi needs compaction, Turbo V1 declines it; create a fresh Pi session while
-retaining the author file. Automatic context management remains V2.
+Context overflow stops explicitly. It does not trigger summarization, shrinking or an automatic LLM call. Adjust authored context and start a fresh check. Turbo declines native compaction in its conversations; automatic state management remains V2.
 
-<details>
-<summary>Freshness, duplicates and uncertain sends</summary>
+## Optional System 2
 
-- Feed corrections receive new immutable version IDs. Failed feed or account reads
-  block the check; they never become “no news” or “no positions”.
-- Every send re-fetches the configured portfolio. A changed exposure blocks the
-  old binding; start another check. Freshness is still a snapshot, not a guarantee
-  against a change immediately after the read.
-- The ledger key includes article version, exposure revision, policy and preview/live
-  mode. An acknowledged send isn't repeated under that key. Semantic duplicates
-  across different source articles are a Jev/policy judgment, not exactly-once delivery.
-- A transport failure after sending is `unknown`. All new alerts stop until you
-  check Telegram and use `/news-resolve <effectKey> sent <receipt>` or
-  `/news-resolve <effectKey> not-sent`. The latter permits a future retry.
-- A crash may leave `stateFile.lock`. Check that the old process is stopped and inspect
-  its pending delivery before removing **that lock**. No automatic stale-lock takeover.
-- Atomic file replacement and saved Pi entries are separate from the external HTTP
-  effect. Branch navigation cannot undo delivery. Power-loss durability is not claimed.
-- Concurrent writers to one file are rejected. Use one watcher per ledger/destination.
+The example host registers native TypeSafe and OpenAI providers. Other providers require an ordinary addition to `run.ts`; Turbo accepts any configured physical native chat model.
 
-</details>
-
-## 4. Enable optional System 2
-
-Replace `system2` in `turbo.local.json` with your **available physical chat model**:
+Set `system2` in `turbo.local.json`:
 
 ```json
 {
   "enabled": true,
-  "model": { "provider": "YOUR_PI_PROVIDER", "id": "YOUR_PHYSICAL_MODEL_ID" },
+  "model": { "provider": "openai", "modelId": "YOUR_AVAILABLE_MODEL_ID" },
   "tools": ["news_article"],
   "maxTurns": 6,
   "maxToolCalls": 8,
@@ -174,53 +84,66 @@ Replace `system2` in `turbo.local.json` with your **available physical chat mode
 }
 ```
 
-Set both model fields from Pi's available models and configure its credentials.
-Restart Pi after editing flags/configuration. The placeholders are not model IDs.
-The total Turbo attempt deadline also applies to the helper.
+Replace the placeholder with a model from your native catalog and supply its provider credentials. The library has no default helper model.
 
 ```text
-JEV chooses help → AUTHOR binds exact source IDs
-  → TURBO starts isolated native Pi Agent
-    → LLM reads permitted sources through parent Pi hooks (several turns)
-    → turbo_finish(findings, sources, uncertainties)
-  → AUTHOR includes returned evidence → JEV decides again
+Jev chooses help
+  → author binds exact retained article IDs
+  → Turbo creates/reuses an owned Durable conversation
+  → physical LLM can call native news_article within that scope
+  → structured findings + actual read evidence return
+  → author includes the result only for that article
+  → Jev judges the next action
 ```
 
-This companion grants source reading only. The helper cannot send Telegram, trade,
-open arbitrary source IDs or complete the parent check. Natural text without
-`turbo_finish` is incomplete evidence. Cancellation stops owned helper work and
-awaits it; a tool that ignores abort can delay settling. Grants constrain native
-tool calls, not arbitrary malicious code in installed extensions.
+The helper cannot send Telegram in this recipe. Its `completed` result is a claim, not proof of news relevance. The parent decides what to do next. See [consultation mechanics and limits](../../ARCHITECTURE.md#system-2-reusable-consultation-native-execution).
 
-## 5. Turn on delivery and watch
+## Delivery and long-running operation
 
-After checking previews, set `mode: "telegram"` and `telegramChatId` in
-`news.local.json`, supply `TELEGRAM_BOT_TOKEN` through your environment, and restart.
-The bot must already have access to the target chat. There is no trading/signing key.
-Telegram success requires an actual `sendMessage` receipt.
-[Telegram API](https://core.telegram.org/bots/api#sendmessage).
+After inspecting previews, set `mode: "telegram"`, set `telegramChatId`, and supply `TELEGRAM_BOT_TOKEN`. Preview/live keys differ: enabling delivery can alert on sources previously previewed.
 
-```text
-/news-check          one check
-/news-watch 300      check every five minutes while this Pi process is open
-/news-watch stop     stop polling
-/pi-turbo           inspect selected integration, phase and outcome
+```sh
+bun run news watch --interval 300 --deadline 120
+# SIGINT closes the process and preserves pending native work.
+bun run news worker
+# Reopens the database and resumes its pending tasks.
 ```
 
-Polling starts with a check, skips busy periods, and pauses on a blocked check or
-model/context failure. Correct the cause and explicitly restart `/news-watch`. It
-also stops on model switch, reload or shutdown. It does not run after Pi exits, and has no durable scheduler. Preview
-and live keys differ: switching to Telegram can alert on retained articles already
-previewed. Starting a watch is explicit; installing the package starts nothing.
+The native watch task runs one check at a time, saves `nextDue` before sleeping and coalesces missed intervals. Each check gets a fresh conversation and a stable submission ID. The task pauses after a blocked, failed, cancelled or timed-out check. Correct the cause and use `watch` to start another task.
 
-## Evidence
+A process supervisor is application infrastructure. Durable persists the work; it cannot restart a dead Bun process by itself. `worker` starts nothing new when the database has no pending tasks.
 
-The tests execute the actual Turbo, companion, Pi loader/session/tool hooks and
-file ledger. Inference and HTTP boundaries use test doubles, including A-skip →
-A+B-alert, stale positions, invalid input, helper cancellation and uncertain sends.
-They prove plumbing and state semantics, **not Jev's relevance accuracy**.
+After shutting down the owning worker:
 
-Before relying on live alerts, evaluate A alone, B alone, A+B, corrections,
-contradictions, repeated claims, stale/closed positions and long/short exposures
-with your configured model and feeds. No live wallet read, Jev classification,
-helper call or Telegram delivery was performed for this implementation task.
+```sh
+bun run news status
+bun run news stop
+```
+
+`stop` aborts the saved watch task and waits for native cancellation to settle. `check --deadline 120` bounds a one-off check. Starting/installing the library schedules nothing.
+
+## Effects and recovery
+
+| Condition | Application behavior |
+| --- | --- |
+| Partial account/feed read fails | Stops; never labels the result “no positions” or “no news”. |
+| Portfolio changed or too old at send | Stops the saved alert binding; requires a fresh check. |
+| Confirmed receipt exists | Deduplicates the exact article/exposure/policy/mode key. |
+| Send accepted, receipt not saved | Keeps `pending` or `unknown`; blocks further alerts until reconciliation. |
+| Process dies during alert tool | Native `replay: "unsafe"` prevents rerunning that tool. |
+| Safe read interrupted | Native recovery replays; Turbo rechecks its binding and current permissions. |
+
+After independently checking Telegram:
+
+```sh
+bun run news resolve EFFECT_KEY sent VERIFIED_RECEIPT
+bun run news resolve EFFECT_KEY not-sent
+```
+
+Use exactly one outcome. `not-sent` permits a later retry. There is no atomic transaction between SQLite and Telegram, and no exactly-once delivery claim.
+
+**Migration:** the old `stateFile`, coding-agent session and slash commands are retired. They are not automatically imported. Preserve historical receipts and reconcile unknown deliveries before using a fresh live ledger. The default remains preview.
+
+Coverage: native/HIP-3 perpetual positions and optional spot balances for explicitly listed accounts. Decimal values and long/short direction are retained. This is exposure inventory, not NAV, account discovery, open-order analysis or trading.
+
+Verification uses real Durable/SQLite with substituted model and HTTP calls. Tests cover A+B context, source-scoped consultation, preview/receipts, stale exposures, unknown sends and watch restart. Live relevance accuracy, live APIs and delivery remain unverified. [Full matrix](../../docs/development.md).

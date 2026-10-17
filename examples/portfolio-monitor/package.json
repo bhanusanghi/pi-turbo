@@ -1,0 +1,41 @@
+{
+  "name": "pi-turbo-portfolio-monitor-example",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "bun": ">=1.4.3"
+  },
+  "scripts": {
+    "setup": "bun src/setup.ts",
+    "local": "bun run infra:up && bun run dev",
+    "check": "bun node_modules/typescript/bin/tsc --noEmit",
+    "build": "bun node_modules/typescript/bin/tsc",
+    "start": "bun dist/src/main.js",
+    "dev": "bun --watch src/main.ts",
+    "migrate": "bun src/migrate.ts",
+    "test": "bun test",
+    "test:integration": "bun test ./test/*.integration.ts",
+    "infra:up": "docker compose up -d --wait",
+    "infra:down": "docker compose down",
+    "sources": "bun src/source-cli.ts"
+  },
+  "dependencies": {
+    "@earendil-works/chord": "1.2.0",
+    "@earendil-works/pi-ai": "1.2.0",
+    "@earendil-works/pi-durable": "1.2.0",
+    "@fastify/type-provider-typebox": "6.3.0",
+    "@nktkas/hyperliquid": "0.33.3",
+    "bullmq": "6.3.15",
+    "decimal.js": "10.6.0",
+    "drizzle-orm": "0.45.4",
+    "fastify": "5.12.7",
+    "grammy": "1.46.0",
+    "typebox": "1.3.37"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/bun": "1.4.3"
+  },
+  "packageManager": "bun@1.4.3"
+}

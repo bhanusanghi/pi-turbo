@@ -10,4 +10,5 @@ dist-examples/
 .DS_Store
 coverage/
 *.tsbuildinfo
+.source-data/
 .video-work/

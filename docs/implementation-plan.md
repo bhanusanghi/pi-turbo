@@ -1,54 +1,33 @@
-# Implementation plan and status
+# Durable migration: implementation status
 
-Updated **2026-10-07** after building Turbo V1 and the requested Hyperliquid/news
-companion. [Architecture](../ARCHITECTURE.md) · [evidence](development.md) ·
-[Pi Durable applicability](research/pi-durable-applicability.md).
+The authorized migration is implemented in this working tree. Baseline: coding-agent 1.0.4 at `404d6db`. New host: Durable / pi-ai / Chord **1.2.0**.
 
-## Completed local implementation
+The former coding-agent plan is available at baseline Git commit `404d6db`. Learning proposals remain outside this migration.
 
-| Step | Concrete result | Verification |
+The independent [Hyperliquid portfolio-monitor foundation](../examples/portfolio-monitor/README.md) supplies common ingress, SDK portfolio normalization, queues, APIs and delivery. Its Turbo evaluator remains deferred.
+
+| Stage | Implemented result | Validation |
 | --- | --- | --- |
-| 1. Native Pi path | Stable `turbo/auto` virtual selection + custom System 1 Provider calling the native classifier. | Actual Pi session and normal tool-result continuation. |
-| 2. Author Interface | `registerSystem1`, `prepareTurn`, paired `resolve`, tool/consult/final decisions. | Independent counter/helper fixtures and real news companion; both load orders and duplicates. |
-| 3. V1 control | Attempt/branch/revision/phase, exact binding, work/time ceilings and explicit errors. | Cancel, stale reply, reload, branch navigation, captured in-flight restore and overflow paths. |
-| 4. System 2 | Optional native Agent inside `turbo_consult`; scoped brief and parent native tool forwarding. | Multi-tool return, host denial, exhaustion, cancel, usage and incomplete/error outcomes. |
-| 5. Requested product | Hyperliquid exposure inventory, RSS/Atom archive, authored joint context, template preview/send and receipt ledger. | Author path and HTTP-boundary tests; no live model or delivery claim. |
-| 6. Package and guide | Private local Pi package, runnable example/configs, source/packed discovery and visual user guide. | Type/build, loader, headless CLI and documentation/visual checks. |
+| Native package/host | Pinned Durable peers; registry extension/provider; removed coding-agent discovery and controller | TypeScript build, real Harness and packed-package execution |
+| System 1 interface | JSON packet, pure versioned resolver, native classifier and task memos | Exact bindings, invalid input, late result and crash recovery |
+| System 2 | Owned child conversation, native generation/tool loop, saved scope and structured return | Native permissions, nested grants, limits, cancellation, evidence and recovery |
+| Product application | Ordinary tools/documents; native SQLite bootstrap | News A+B, preview, receipts, deduplication and unknown-effect reconciliation |
+| Long-running example | Application `defineTask` with saved next due/check deadline and stable submission | Pause on failure, reopen without resetting timer, native cancellation |
+| Migration/reviewer docs | HLD/LLD, ownership, before/after, applicability table, runnable guide | Source-linked contracts and explicit evidence limits |
 
-**Transport decision:** use Pi's native `Agent` with explicit parent tool forwarding.
-The earlier same-session phase-routing sketch is superseded; no bespoke agent loop
-or separately durable child session was added.
+## Deployment work requiring real configuration
 
-## Remaining deployment validation
+1. Select actual accounts, feeds, native model providers and credentials; run preview.
+2. Evaluate Jev with independently labelled A-only, B-only, A+B, corrections, contradictions, duplicate and stale-position cases.
+3. Evaluate scoped helper returns, denied reads, failure/timeout and uncertainty with the selected physical model.
+4. Reconcile/import existing application receipt data before enabling Telegram in a new SQLite ledger. No automatic legacy importer is included.
+5. Verify a previewed message and real Telegram receipt using the operator's chosen destination.
+6. Configure the application's process supervisor and storage backup policy; verify restart in that deployment.
 
-These require actual user configuration; they are not hidden implementation success claims.
+These are live deployment/evaluation steps, not claims of tests already performed. No monitor, model call or external delivery was enabled by implementing this migration.
 
-1. **Configure:** public account/subaccounts, selected feeds and TypeSafe access.
-   Start in preview mode and verify the reported account/DEX/source coverage.
-2. **Measure Jev:** A alone, B alone, A+B, correction, contradiction, duplicate claim,
-   unrelated entity, stale/closed position and long/short direction. Record actual
-   answers, returned model version, usage, latency and disagreements with policy.
-3. **Optional helper:** select an authenticated physical Pi model. Check live source
-   reads, explicit return, incomplete evidence and provider errors under its limits.
-4. **Delivery:** choose a Telegram bot/chat and enable live mode explicitly. Verify
-   an actual receipt and inspect timeout/unknown reconciliation before continuous use.
-5. **Release:** choose registry/repository identity and version only on a separate
-   publication request. Keep `private: true` until then. Retest any newer Pi baseline.
+## Outside this version
 
-The independent ticket-triage product remains an authored design example, outside
-the requested Hyperliquid implementation. Implement its real ticket-fetch/assignment
-Adapters and category evaluation when selected; never substitute success for an
-unavailable assignment tool. No domain changes should be needed in Turbo.
+Automatic state selection, shrinking, summarization, semantic article retrieval, learning/consolidation, a generic workflow/scheduler, multiplayer UI, old-session conversion and exactly-once external effects.
 
-## Deliberately outside V1
-
-Automatic retrieval/grouping, state reduction, question splitting, semantic
-checkpoints, compaction, overflow recovery and a reusable story-memory Module
-remain **V2**. Authors can implement their own explicit selection and storage now.
-Dollar spend caps are also not implemented; current ceilings bound steps, turns,
-tool calls and elapsed time.
-
-Durable crash continuation is a separate host decision, not a V2 context feature.
-Evaluate the actual host/storage contract before promising replay or background
-jobs. The example's `/news-watch` timer only lives while its Pi process is open.
-Interrupted effects remain unknown until the author/operator reconciles them.
+Future learning work requires separate scope. This runtime's temporary recovery memos do not constitute a permanent evaluation dataset.
