@@ -77,7 +77,8 @@ Conversation.submit(input, requestId)                  DURABLE: admission/dedupl
    │  ├─ api.models.classify(authored request)         native model access / Jev
    │  ├─ memo: answer
    │  ├─ author.resolveTurn(packet, answer)            AUTHOR: pure translation
-   │  └─ memo: decision + assistant message
+   │  ├─ memo: decision + assistant message + evidence
+   │  └─ optional host writer: retained native evidence
    ├─ local provider returns signed prepared message  TURBO: chat-shaped adapter
    └─ native ToolTask                                 DURABLE: schemas/hooks/replay
       ├─ Turbo wrapper checks saved call ID + args
@@ -103,7 +104,9 @@ Jev judges the supplied state and questions. Turbo does not give it hidden cross
 | Helper scope/result | Turbo conversation document | Fixed deadline, grants, task IDs, evidence and result; not product memory. |
 | Jev input | Author's prepared packet | Selected evidence only; Turbo never summarizes or selects product evidence. |
 
-A task memo is a recovery aid, not a permanent evaluation dataset. If an application needs frozen decision cases after completion, it must explicitly retain them in its own documents/entries.
+A task memo is a recovery aid, not a permanent evaluation dataset. The optional `evidence` writer retains a versioned `System1Evidence` record before Turbo returns a signed response. `createNativeEvidenceStore(harness)` commits a data-only immutable entry and a conversation index together. Repeated identical writes return the same entry. Conflicting data for the same integration, revision, conversation, and generation rejects.
+
+The record contains the actual prepared request and bindings, classifier result when available, mapped decision or diagnostic, translated response, and a reference to the preceding consultation's task and child conversation. The child transcript remains native history. No evidence entry adds a model message. Applications own product cases, access controls, projections, and storage lifecycle. See the [retained evidence contract](docs/evidence.md).
 
 Authors select related records, prior judgments and the relevant consultation evidence in `prepareTurn`. Turbo supplies the complete helper result; the author decides what the next judgment needs. Retention, truncation labels and archival remain application policy.
 
@@ -155,7 +158,8 @@ A provider call interrupted before its response is memoized may be repeated by r
 | Interruption point | What happens on reopening |
 | --- | --- |
 | Before packet/answer commit | Native task invokes the unfinished preparation/inference again. Author preparation must be repeatable. |
-| After decision memo | Reuse that decision; do not reclassify changed product state for the saved call. |
+| After decision memo | Reuse that decision; do not reclassify changed product state for the saved call. Retry the configured evidence writer before returning the signed response. |
+| Evidence writer throws | Durable reports the hook failure. The provider rejects the missing signed envelope, so no mapped action executes. With retries disabled, the submission settles unanswered. |
 | During safe tool | Durable replays the same ToolTask; Turbo rechecks binding, revision, current grant and deadline inside `execute`. |
 | During unsafe tool | Durable reports interrupted execution; Turbo does not resend the effect. |
 | During consultation | Find the same owned conversation and stable submission; keep its original deadline and limits. |

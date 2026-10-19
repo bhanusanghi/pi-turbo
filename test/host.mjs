@@ -28,7 +28,7 @@ export function response(content, extras = {}) {
     usage: { ...zeroUsage(), input: 20, output: 2, totalTokens: 22 }, ...extras };
 }
 export async function host({ integration, tools = [], classify = req => choose(req, 'go'), helper,
-  system2, extensions = [], settings = {}, init, dir: suppliedDir, extraTasks = [], turboFactory = createTurbo } = {}) {
+  system2, extensions = [], settings = {}, init, dir: suppliedDir, extraTasks = [], evidence, turboFactory = createTurbo } = {}) {
   const dir = suppliedDir ?? await mkdtemp(join(tmpdir(), 'pi-turbo-durable-'));
   const seen = { classifications: [], helper: [], errors: [] };
   const models = createModels();
@@ -51,7 +51,7 @@ export async function host({ integration, tools = [], classify = req => choose(r
       return events;
     },
   });
-  const turbo = turboFactory({ integration, tools, classifier: { provider: 'fixture', modelId: 'jev' }, ...(system2 ? { system2 } : {}) });
+  const turbo = turboFactory({ integration, tools, ...(evidence ? { evidence } : {}), classifier: { provider: 'fixture', modelId: 'jev' }, ...(system2 ? { system2 } : {}) });
   const registry = createRegistry();
   const product = defineExtension({ name: 'product', tools, tasks: extraTasks });
   registry.install(product); registry.install(turbo.extension);

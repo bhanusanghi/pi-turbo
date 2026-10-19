@@ -27,7 +27,7 @@ async function crash(dir, mode) {
     await child.exited;
   }
 }
-for (const mode of ['packet', 'safe', 'unsafe', 'helper']) {
+for (const mode of ['packet', 'safe', 'unsafe', 'helper', 'evidence']) {
   test(`SIGKILL/reopen: ${mode} uses Durable recovery and preserves the saved decision`, async () => {
     const dir = await mkdtemp(join(tmpdir(), 'turbo-crash-'));
     let h;
@@ -54,6 +54,12 @@ for (const mode of ['packet', 'safe', 'unsafe', 'helper']) {
       }
       else
         assert.equal((await h.harness.snapshot(Receipt, h.root.id, context)).done, true);
+      if (mode === 'evidence') {
+        const writes = (await lines(dir, 'evidence-writes')).map(line => JSON.parse(line));
+        assert.equal(writes.length, 3, 'original decision, recovered write, and final generation');
+        assert.deepEqual(writes[0], writes[1], 'retry reuses the immutable entry and generation');
+        assert.notEqual(writes[2].entryId, writes[0].entryId);
+      }
       assert.deepEqual(h.seen.errors, []);
     }
     finally {

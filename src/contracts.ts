@@ -1,8 +1,8 @@
 import type { JsonValue, JsonRepresentation } from "@earendil-works/chord";
 import type { JsonObject } from "@earendil-works/pi-durable";
 import type { Context } from "@earendil-works/chord/context";
-import type { ClassifierContext, ClassifierResult, Message, Usage } from "@earendil-works/pi-ai";
-import type { Extension, HookApi, ModelRef, ToolRegistration } from "@earendil-works/pi-durable";
+import type { AssistantMessage, ClassifierContext, ClassifierResult, Message, Usage } from "@earendil-works/pi-ai";
+import type { ConversationId, EntryId, Extension, HookApi, ModelRef, TaskId, ToolRegistration } from "@earendil-works/pi-durable";
 
 export type { JsonObject, JsonValue, ModelRef };
 export type TaskStatus = "completed" | "waiting_input" | "blocked" | "cancelled" | "error";
@@ -52,10 +52,26 @@ export type System2Options = {
   maxToolCalls?: number;
   timeoutMs?: number;
 };
+export type EvidenceIdentity = {
+  integrationId: string; revision: string; conversationId: ConversationId; generationId: TaskId;
+};
+export type EvidenceReference = EvidenceIdentity & { entryId: EntryId };
+/** Observable decision data. Native child history remains the consultation transcript. */
+export type System1Evidence = EvidenceIdentity & {
+  version: 1;
+  input?: PreparedTurn | FinalDecision;
+  answer?: ClassifierResult;
+  outcome: { decision: System1Decision; diagnostic?: never } | { diagnostic: string; decision?: never };
+  response: AssistantMessage;
+  consultation?: { taskId: TaskId; conversationId: ConversationId };
+};
+export type EvidenceWriter = (evidence: System1Evidence, context: Context) => Promise<EvidenceReference>;
 export type TurboOptions = {
   integration: System1Integration;
   classifier: ModelRef;
   /** Ordinary Durable tool references. The application registers and implements them. */
   tools: readonly ToolRegistration[];
   system2?: System2Options;
+  /** Await retained evidence before admitting this generation's decision to native execution. */
+  evidence?: EvidenceWriter;
 };

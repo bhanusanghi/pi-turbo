@@ -15,7 +15,7 @@ bun run test
 bun pm pack --dry-run
 ```
 
-`prepack` cleans/builds the runtime package. The archive includes compiled exports/declarations, source and selected core documentation. It excludes application examples, media, local configs, credentials and databases. The package test extracts the archive and executes its exported extension through a real Harness.
+`prepack` cleans/builds the runtime package. The archive includes compiled exports/declarations, source and selected core documentation. It excludes application examples, media, local configs, credentials and databases. The package test extracts the archive and executes its exported extension and retained evidence store through a real Harness.
 
 ## Future authorized release
 

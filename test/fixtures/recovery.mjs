@@ -2,6 +2,7 @@ import { appendFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Type } from '@earendil-works/pi-ai';
 import { defineDoc, defineTool, defineExtension, GenerationTask, hook } from '@earendil-works/pi-durable';
+import { createNativeEvidenceStore } from "../../dist/index.js";
 import { host, context, choose, question, response, tool, finish, helpOptions } from '../host.mjs';
 export const Receipt = defineDoc({ kind: 'recovery.receipt', version: 1, scope: 'conversation', history: 'latest', fork: 'initial', initial: () => ({ done: false }) });
 const waitForClose = context => new Promise((_resolve, reject) => {
@@ -35,10 +36,18 @@ export async function recoveryHost({ dir, mode = 'safe', pause = false, ready = 
       if (pause && mode === 'packet' && await api.memo('turbo.test.response', ctx)) { ready(); await waitForClose(ctx); }
     },
   })] });
+  const storeReady = Promise.withResolvers();
   const h = await host({ dir, integration, tools: [work], extensions: [barrier],
+    ...(mode === 'evidence' ? { evidence: async (evidence, ctx) => {
+      const ref = await (await storeReady.promise).write(evidence, ctx);
+      await record('evidence-writes', JSON.stringify(ref));
+      if (pause) { ready(); await waitForClose(ctx); }
+      return ref;
+    } } : {}),
     classify: async req => { await record('classifications', 'Jev'); return choose(req, 'go'); },
     system2: { ...helpOptions, tools: grants, maxToolCalls: 1, timeoutMs },
     helper: async input => { await record('models', 'LLM'); return response(input.messages.some(m => m.role === 'toolResult') ? [finish()] : [tool('work', { value: 7 })]); },
   });
+  storeReady.resolve(createNativeEvidenceStore(h.harness));
   return { ...h, result: () => returned };
 }

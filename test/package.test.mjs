@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { Type } from '@earendil-works/pi-ai';
 import { defineTool } from '@earendil-works/pi-durable';
-import { host, question } from './host.mjs';
+import { host, context, question } from './host.mjs';
 const root = resolve(import.meta.dirname, '..');
 function run(cmd, cwd = root) {
   const result = Bun.spawnSync(cmd, { cwd, stdout: 'pipe', stderr: 'pipe' });
@@ -32,16 +32,23 @@ test('packed package executes in a native Durable Harness with its declared peer
     assert.equal(metadata.peerDependencies['@earendil-works/pi-durable'], '1.2.0');
     assert.equal(metadata.packageManager, 'bun@1.4.3');
     assert.equal(metadata.engines.node, undefined);
-    const { createTurbo } = await import(pathToFileURL(join(dir, 'package', 'dist', 'index.js')));
+    const { createTurbo, createNativeEvidenceStore, System1EvidenceEntry } = await import(pathToFileURL(join(dir, 'package', 'dist', 'index.js')));
     let effects = 0;
+    const storeReady = Promise.withResolvers();
     const ordinary = defineTool({ name: 'ordinary', description: 'Native package smoke test', parameters: Type.Object({}), replay: 'unsafe',
       async execute() { effects++; return { output: [{ type: 'text', text: 'native result' }] }; } });
-    h = await host({ turboFactory: createTurbo, tools: [ordinary], integration: { id: 'package', revision: '1',
+    h = await host({ turboFactory: createTurbo, tools: [ordinary],
+      evidence: async (record, ctx) => (await storeReady.promise).write(record, ctx), integration: { id: 'package', revision: '1',
         prepareTurn: ({ messages }) => messages.some(m => m.role === 'toolResult')
           ? { kind: 'final', status: 'completed', text: 'Loaded packed extension' } : { request: question({ check: true }), bindings: {} },
         resolveTurn: () => ({ kind: 'tool', name: 'ordinary', args: {} }) } });
+    const store = createNativeEvidenceStore(h.harness);
+    storeReady.resolve(store);
     assert.equal((await h.run()).status, 'done');
     assert.equal(effects, 1);
+    const entries = await h.harness.commit(async tx => (await tx.scanEntries({ conversationId: h.root.id }, 100)).items.filter(System1EvidenceEntry.is), context);
+    assert.equal(entries.length, 2);
+    assert.equal((await store.read(entries[0].data, context)).reference.entryId, entries[0].id);
     assert.deepEqual(h.seen.errors, []);
   }
   finally {
