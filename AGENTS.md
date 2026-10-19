@@ -29,8 +29,10 @@ It separates agreed ownership rules from draft interfaces.
   permissions remain explicit.
 - Product instructions and evidence selection stay authored by the application.
   Tool authority comes from executable grants, never instruction text.
-- Native recovery memos are transient. Applications own retained evaluation records,
-  policy snapshots, and evidence required for later inspection.
+- Native recovery memos are transient. Retain generic decision evidence through
+  Pi Durable records for developer debugging and product improvement. Applications own
+  product cases, policy snapshots, trace references, and access to developer diagnostics.
+  Raw prompts, model answers, and tool traces are not end-user product features.
 - Keep compatible runtime changes independently reviewable before consumer updates.
   Update the public contract and compatibility evidence together.
 - Keep executable behavior, proposed contracts, pseudocode, and unverified behavior
