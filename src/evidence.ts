@@ -1,10 +1,10 @@
 import type { JsonRepresentation } from "@earendil-works/chord";
-import { defineDocFamily, defineEntry, type EntryId, type Harness } from "@earendil-works/pi-durable";
+import { defineDocFamily, defineEntry, type Entry, type EntryId, type Harness } from "@earendil-works/pi-durable";
 import type { Context } from "@earendil-works/chord/context";
 import type { EvidenceIdentity, EvidenceReference, EvidenceWriter, System1Evidence } from "./contracts.js";
 import { json, object, same } from "./runtime/protocol.js";
 
-export const System1EvidenceEntry = defineEntry<JsonRepresentation<System1Evidence>>("turbo.system1-evidence.v1");
+export const System1EvidenceEntry: Entry<JsonRepresentation<System1Evidence>> = defineEntry<JsonRepresentation<System1Evidence>>("turbo.system1-evidence.v1");
 const Index = defineDocFamily({ kind: "turbo.system1-evidence-index", version: 1,
   scope: "conversation", history: "latest", fork: "initial", family: true,
   initial: () => ({ entryId: null as EntryId | null }),
