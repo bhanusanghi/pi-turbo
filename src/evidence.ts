@@ -41,12 +41,13 @@ export function createNativeEvidenceStore(host: Pick<Harness, "commit" | "snapsh
   };
   async function read(identity: EvidenceIdentity, context: Context) {
     const index = await host.snapshot(Index, identity.conversationId, key(identity), context);
-    if (!index?.entryId) return undefined;
-    const entry = await host.commit(tx => tx.entry(System1EvidenceEntry, index.entryId!), context);
+    const entryId = index?.entryId;
+    if (entryId == null) return undefined;
+    const entry = await host.commit(tx => tx.entry(System1EvidenceEntry, entryId), context);
     if (!entry || entry.conversationId !== identity.conversationId || !same(reference(entry.data, entry.id), reference(identity, entry.id))) {
       throw new Error("Invalid retained Turbo evidence index");
     }
-    return { reference: reference(identity, entry.id), evidence: entry.data as System1Evidence };
+    return { reference: reference(identity, entry.id), evidence: structuredClone(entry.data) as System1Evidence };
   }
   return { write, read };
 }

@@ -31,6 +31,7 @@
     "src",
     "dist",
     "docs/development.md",
+    "docs/evidence.md",
     "docs/releasing.md",
     "docs/durable-migration.md",
     "docs/v1-implementation.md",
