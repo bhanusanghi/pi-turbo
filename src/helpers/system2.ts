@@ -1,7 +1,7 @@
 import type { JsonObject } from "@earendil-works/pi-durable";
 import { withAbortSignal, type Context } from "@earendil-works/chord/context";
 import { Type, type AssistantMessage, type Message } from "@earendil-works/pi-ai";
-import { configure, defineDoc, defineTool, type ConversationId, type Cursor, type HookApi,
+import { ProviderDoc, configure, defineDoc, defineTool, type ConversationId, type Cursor, type HookApi,
   type ToolExecutionApi, type ToolExecutionResult, type ToolRegistration, type Tx } from "@earendil-works/pi-durable";
 import type { HelpRequest, HelpResult, System1Decision, ToolEvidence, TurboOptions } from "../contracts.js";
 import { addUsage, json, object, permitted, positive, same, zeroUsage } from "../runtime/protocol.js";
@@ -108,7 +108,9 @@ export function createConsultation(options: TurboOptions, names: Names,
         const model = api.models.getModel(state.scope.model.provider, state.scope.model.modelId);
         if (!model || model.provider === names.provider) throw new Error("Select a physical System 2 chat model");
         const signal = AbortSignal.any([...(context.abortSignal ? [context.abortSignal] : []), AbortSignal.timeout(Math.max(1, state.scope.deadline - Date.now()))]);
-        const physical = await api.models.streamSimple(model, { messages: [...messages] }, { signal, maxRetries: 0 }).result();
+        // Forward the child conversation's persisted provider session identity, as native generation does. Some gateways refuse requests without one.
+        const sessionId = (await api.snapshot(ProviderDoc, api.conversationId, context))?.sessionId;
+        const physical = await api.models.streamSimple(model, { messages: [...messages] }, { signal, maxRetries: 0, ...(sessionId ? { sessionId } : {}) }).result();
         context.abortSignal?.throwIfAborted();
         const calls = physical.content.filter(c => c.type === "toolCall");
         const limit = Math.min(state.scope.maxToolCalls, positive(config.maxToolCalls, 8, "system2.maxToolCalls"));

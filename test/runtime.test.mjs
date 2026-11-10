@@ -259,6 +259,21 @@ test('native nested tool execution remains available to ordinary product tools',
     await h.cleanup();
   }
 }, 5000);
+test('helper request carries the child conversation provider session identity', async () => {
+  const sessions = [];
+  const h = await host({ integration: consulting(), tools: [increment], system2: { ...helpOptions, tools: ['increment'] },
+    helper: (_input, opts) => { sessions.push(opts?.sessionId); return response([finish()]); } });
+  try {
+    await h.run();
+    assert.equal(sessions.length, 1);
+    assert.match(String(sessions[0]), /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-/);
+  }
+  finally {
+    await h.close();
+    await h.cleanup();
+  }
+}, 5000);
+
 test('helper receives native instructions and model tool schemas', async () => {
   const h = await host({ integration: consulting(), tools: [increment], system2: { ...helpOptions, tools: ['increment'] },
     helper: input => {

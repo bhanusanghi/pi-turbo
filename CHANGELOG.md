@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Forward the consultation conversation's persisted provider session identity on the physical System 2 request, as native generation does. Gateways that route by session, such as OpenCode, no longer reject helper requests.
 - Add optional typed decision evidence retained in native entries before signed actions, with atomic idempotency, diagnostic records, and host-controlled access.
 - Verify recorder failure gates, native retained reads, consultation links, and evidence recovery across SIGKILL and package extraction.
 
