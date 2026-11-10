@@ -6,9 +6,9 @@ import { AgentDoc, CompactionTask, GenerationTask, ToolTask, defineExtension, ho
 import { createConsultation } from "./helpers/system2.js";
 import { createBridge, assistant } from "./runtime/provider.js";
 import { json, object, same, validateAnswers } from "./runtime/protocol.js";
-import type { HelpResult, PreparedTurn, System1Decision, TurboOptions } from "./contracts.js";
+import type { HelpResult, PreparedTurn, System1Decision, System1Evidence, TurboOptions } from "./contracts.js";
 
-type SavedResponse = { revision: string; decision?: System1Decision; message: AssistantMessage; error?: string };
+type SavedResponse = { revision: string; decision?: System1Decision; message: AssistantMessage; error?: string; evidence: System1Evidence };
 
 /** Add System 1 decisions and optional consultation to an ordinary Durable application. */
 export function createTurbo(options: TurboOptions) {
@@ -37,13 +37,18 @@ export function createTurbo(options: TurboOptions) {
     const saved = await api.memo(responseKey, context) as unknown as SavedResponse | undefined;
     if (saved) {
       if (saved.revision !== integration.revision) throw new Error("Saved Turbo recipe revision changed");
+      await options.evidence?.(structuredClone(saved.evidence), context);
       return saved.message;
     }
+    let input: PreparedTurn | System1Decision | undefined;
+    let answer: ClassifierResult | undefined;
+    let consultation: System1Evidence["consultation"];
+    let errorDetail: string | undefined;
     let output = assistant(names.provider);
     let decision: System1Decision | undefined;
     try {
       const packetKey = `${names.extension}.packet`;
-      let record = await api.memo(packetKey, context) as unknown as { revision: string; packet: PreparedTurn | System1Decision } | undefined;
+      let record = await api.memo(packetKey, context) as unknown as { revision: string; packet: PreparedTurn | System1Decision; consultation?: System1Evidence["consultation"] } | undefined;
       if (!record) {
         const lastInput = messages.findLastIndex(m => m.role === "user");
         const helpMessage = messages.slice(lastInput + 1).findLast(m => m.role === "toolResult" && m.toolName === names.consult);
@@ -57,10 +62,12 @@ export function createTurbo(options: TurboOptions) {
             helperTools: system2 ? options.system2!.tools.filter(name => availableTools.includes(name)) : [] },
           ...(consultation ? { consultation } : {}) }, context);
         object(packet);
-        record = await api.memo(packetKey, json({ revision: integration.revision, packet }), context) as unknown as typeof record;
+        record = await api.memo(packetKey, json({ revision: integration.revision, packet,
+          ...(consultation ? { consultation: { taskId: consultation.id, conversationId: consultation.conversationId } } : {}) }), context) as unknown as typeof record;
       }
       if (!record || record.revision !== integration.revision) throw new Error("Saved Turbo recipe revision changed");
       const packet = record.packet;
+      input = packet; consultation = record.consultation;
       if ("kind" in packet) {
         if (packet.kind !== "final") throw new Error("Preparation may return only a packet or final decision");
         decision = packet;
@@ -68,7 +75,7 @@ export function createTurbo(options: TurboOptions) {
         object(packet.request.state); object(packet.bindings);
         if (!Object.keys(packet.request.questions).length) throw new Error("At least one authored question is required");
         const answerKey = `${names.extension}.answer`;
-        let answer = await api.memo(answerKey, context) as unknown as ClassifierResult | undefined;
+        answer = await api.memo(answerKey, context) as unknown as ClassifierResult | undefined;
         if (!answer) {
           const classifier = api.models.getModelOfType("classifier", options.classifier.provider, options.classifier.modelId);
           if (!classifier) throw new Error("Configured classifier is unavailable");
@@ -104,9 +111,18 @@ export function createTurbo(options: TurboOptions) {
       context.abortSignal?.throwIfAborted();
       const detail = error instanceof Error ? error.message : String(error);
       output = { ...output, content: [{ type: "text", text: detail }], stopReason: "error", errorMessage: "Turbo decision failed; inspect the recorded diagnostic" };
-      return (await api.memo(responseKey, json({ revision: integration.revision, message: output, error: detail }), context) as unknown as SavedResponse).message;
+      errorDetail = detail;
     }
-    return (await api.memo(responseKey, json({ revision: integration.revision, decision, message: output }), context) as unknown as SavedResponse).message;
+    const evidence = json({ version: 1, integrationId: integration.id, revision: integration.revision,
+      conversationId: api.conversationId, generationId: api.taskId,
+      ...(input ? { input } : {}), ...(answer ? { answer } : {}),
+      outcome: errorDetail !== undefined ? { diagnostic: errorDetail } : { decision }, response: output,
+      ...(consultation ? { consultation } : {}),
+    }) as unknown as System1Evidence;
+    const response = await api.memo(responseKey, json({ revision: integration.revision,
+      ...(errorDetail !== undefined ? { error: errorDetail } : { decision }), message: output, evidence }), context) as unknown as SavedResponse;
+    await options.evidence?.(structuredClone(response.evidence), context);
+    return response.message;
   }
   const extension = defineExtension({ name: names.extension,
     tools: [helper.consult, helper.finish],

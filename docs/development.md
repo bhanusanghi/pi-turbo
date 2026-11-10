@@ -33,13 +33,16 @@ The remaining suite covers the core runtime and packed extension. These tests ar
 | Process recovery | Separate worker is SIGKILLed; reopen reuses saved decisions, safe tool task and consultation child. Unsafe effects do not replay. |
 | Changed policy | Reopened recipe revision and helper grants rechecked before execution; absolute deadline survives close/reopen. |
 | Context | Invalid/oversized classification stops without fallback; manual compaction leaves Turbo transcript unchanged and calls no LLM. |
+| Retained evidence | Actual request, answer and final or diagnostic; atomic duplicate and conflict handling; no model messages; terminal cleanup, reset, compaction, reopen, and SIGKILL recovery. Recorder failure prevents tool effects. |
 | Package | Packed native extension runs inside Harness; application examples, media and secrets are excluded. |
 
 Not verified: live Jev quality, live helper quality, all third-party hooks, power-loss recovery, distributed/multiple-writer storage or a deployed process supervisor.
 
 ## System 1 evidence
 
-This cleanup changes no runtime source, authored decision contract, model input or consultation policy. Runtime tests continue to exercise native offered capabilities, exact saved bindings, current permissions, nested tool evidence (including structured `null`), invalid answers and cancellation. They establish mechanical behavior with substituted model answers; live semantic quality remains unverified.
+The next Jev judgment still receives only the author's prepared request. Retained evidence records that request and the returned classifier result without adding model messages or changing question meaning. Native tests show before and after behavior through ordinary tools, failed inference diagnostics, consultation references, and the signed transport failure gate.
+
+`bun run test` also extracts the packed package and runs the public evidence store through the real Harness. The process recovery test kills a worker after its evidence commit, then confirms that recovery reuses the record and saved inference. These checks establish mechanical runtime behavior with substituted inference. Live semantic model quality remains unverified. A cancelled native task can interrupt recording and has no guaranteed complete evidence record.
 
 ## Native contracts to preserve
 

@@ -41,6 +41,8 @@ bun run test
 
 This migration replaces the coding-agent host integration. `pi -e`, `/pi-turbo`, companion registration, old session files and `stateFile` configuration do not apply. Application data migrations remain the responsibility of the consuming application.
 
+Optional [retained decision evidence](docs/evidence.md) preserves Jev inputs, answers, decisions, and consultation references through a host-owned native store. Application access policy controls developer inspection.
+
 V1 context remains author-managed. Turbo reports overflow; it does not summarize or silently enable an LLM. System 2 is opt-in. Durable resumes pending tasks; applications retain responsibility for safe replay and uncertain external effects.
 
 The package remains local/private. Tests cover native execution and process recovery with substituted inference/network calls; live model quality and external delivery are unverified.
